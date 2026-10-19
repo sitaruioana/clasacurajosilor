@@ -1,0 +1,1 @@
+Incarca TOATE folderele si fisierul index.html din acest pachet in radacina repository-ului GitHub. Nu incarca doar index.html. Pastreaza structura de foldere. Linkurile vor functiona dupa publicarea tuturor fisierelor.
