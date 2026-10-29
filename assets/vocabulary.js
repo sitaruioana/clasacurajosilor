@@ -1,8 +1,48 @@
 /* Shared vocabulary experience; the existing sentence hints are retained. */
 const originalRenderVocab = renderVocab;
 const originalVocabHelp = vocabHelp;
+const vocabOriginalCertificateUnlock = certificateUnlock;
+certificateUnlock = function(){return route[0]==='llr'&&route[1]==='vocab'?'':vocabOriginalCertificateUnlock();};
 const originalVocabCrumbs = crumbs;
 crumbs = () => originalVocabCrumbs().replace('>learn</button>', '>Învață</button>');
+const vocabProgressKey='curajosilor-vocab-progress-v1';
+function vocabReadProgress(){
+  try{const p=JSON.parse(localStorage.getItem(vocabProgressKey));if(p&&Number.isInteger(p.points)&&p.points>=0&&p.words&&typeof p.words==='object'&&!Array.isArray(p.words))return p;}catch(e){}
+  return {points:0,words:{}};
+}
+function vocabToday(){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+function vocabProgressContent(){
+  const p=vocabReadProgress(),today=vocabToday(),words=Object.values(p.words);
+  return `<div><strong>⭐ ${p.points}</strong><small>Punctele mele</small></div><div><strong>${words.filter(w=>w.lastDay===today).length}</strong><small>Cuvinte reușite azi</small></div><div><strong>${words.length} / ${VOCAB.length}</strong><small>Cuvinte reușite în total</small></div>`;
+}
+function vocabProgressWidget(){return `<section id="vocab-points" class="vocab-score" aria-label="Progresul meu">${vocabProgressContent()}</section>`;}
+function vocabAward(ids){
+  const p=vocabReadProgress(),today=vocabToday();let earned=0;
+  for(const i of new Set(ids)){
+    if(!VOCAB[i])continue;const word=VOCAB[i][0],id=norm(word);
+    if(p.words[id]?.lastDay===today)continue;
+    p.words[id]={word,lastDay:today};p.points++;earned++;
+  }
+  if(earned)try{localStorage.setItem(vocabProgressKey,JSON.stringify(p));}catch(e){}
+  const panel=$('#vocab-points');if(panel)panel.innerHTML=vocabProgressContent();
+  return earned;
+}
+function vocabRewardMessage(earned){return earned?`<div class="vocab-reward" role="status">⭐ +${earned} ${earned===1?'punct':'puncte'}! Bravo!</div>`:'';}
+function vocabQuickNav(){
+  if(!route[2])return '';
+  return `<nav class="vocab-tabs" aria-label="Alege activitatea">${[['learn','📖 Învață'],['match','Nivelul 1'],['similar','Nivelul 2'],['gaps','Propoziții'],['opposite','Sens opus']].map(([id,label])=>`<button type="button" ${route[2]===id?'aria-current="page"':''} onclick="go('llr','vocab','${id}')">${label}</button>`).join('')}</nav>`;
+}
+const vocabOriginalView=view;
+view=function(html){return vocabOriginalView(route[0]==='llr'&&route[1]==='vocab'?vocabProgressWidget()+vocabQuickNav()+html:html);};
+const vocabOriginalVerify=vocabVerify;
+vocabVerify=function(){
+  vocabOriginalVerify();
+  const list=VOCAB.map((v,i)=>({v,i})).filter(x=>x.v[2]),ids=[];
+  for(const field of document.querySelectorAll('[data-answer]')){
+    if(field.dataset.answer.split('|').map(norm).includes(norm(field.value))){const i=Number(field.dataset.id);ids.push(route[2]==='opposite'?list[i]?.i:i);}
+  }
+  const earned=vocabAward(ids);const score=$('#score');if(score)score.innerHTML+=vocabRewardMessage(earned);
+};
 const vocabDates = new Map();
 const vocabLessons = new Map();
 function vocabApplyReleases() {
@@ -27,7 +67,7 @@ window.addEventListener('focus',()=>{if(vocabApplyReleases()&&route[0]==='llr'&&
 vocabScheduleRelease();
 FRIENDLY_ROUTES['vocabular/invata'] = ['llr','vocab','learn'];
 const vocabStyle = document.createElement('style');
-vocabStyle.textContent = `.vocab-flashcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:12px}.vocab-flashcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:132px;width:100%;padding:14px 10px;border:2px solid var(--flash-border,#6c8dd9);border-radius:16px;background:var(--flash-bg,#f0f5ff);color:var(--ink);box-shadow:0 4px 16px #26344a08;text-align:center;overflow-wrap:anywhere}.vocab-flashcard[aria-pressed=true]{background:var(--flash-back,#e0edff);border-color:var(--flash-border,#6c8dd9)}.vocab-flashcard:nth-child(6n+1){--flash-border:#e36a9d;--flash-bg:#fff1f6;--flash-back:#ffe0ec}.vocab-flashcard:nth-child(6n+2){--flash-border:#5e92e0;--flash-bg:#eef5ff;--flash-back:#dceaff}.vocab-flashcard:nth-child(6n+3){--flash-border:#55ab84;--flash-bg:#edf9f1;--flash-back:#d9f1e2}.vocab-flashcard:nth-child(6n+4){--flash-border:#d9ac35;--flash-bg:#fff9e6;--flash-back:#fff0b5}.vocab-flashcard:nth-child(6n+5){--flash-border:#a17bd5;--flash-bg:#f7f0ff;--flash-back:#ecddff}.vocab-flashcard:nth-child(6n){--flash-border:#e59a51;--flash-bg:#fff4e9;--flash-back:#ffe6cd}.vocab-flashcard strong{font-size:1.12rem;line-height:1.35}.vocab-flashcard small{color:#52677d;font-size:.75rem;line-height:1.3}.vocab-flashcard:focus-visible{outline:3px solid #ffb540;outline-offset:3px}.vocab-sentence{font-size:1.3rem;line-height:1.9}.vocab-bank{display:flex;flex-wrap:wrap;gap:8px}.vocab-bank span{background:white;padding:4px 12px;border:1px solid #d7dfea;border-radius:14px}.vocab-progress{font-weight:700;color:#4563a1}.vocab-new{font-size:.8rem;color:#4563a1;font-weight:700}.vocab-end{font-size:1.3rem}@media(max-width:300px){.vocab-flashcards{grid-template-columns:1fr}}`;
+vocabStyle.textContent = `.vocab-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}.vocab-tabs button{border:1px solid #b7cbea;border-radius:10px;background:#fff;color:#34517e;padding:8px 12px;font-weight:650}.vocab-tabs button[aria-current=page]{background:#436dd0;color:#fff;border-color:#436dd0}.vocab-tabs button:focus-visible{outline:3px solid #ffb540;outline-offset:2px}.vocab-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 16px}.vocab-score>div{border:1px solid #d3dfed;background:#fff9e8;border-radius:13px;padding:10px;text-align:center}.vocab-score>div:nth-child(2){background:#edf8f1}.vocab-score>div:nth-child(3){background:#eef3ff}.vocab-score strong{display:block;font-size:1.2rem;color:#304c7d}.vocab-score small{display:block;font-size:.76rem;line-height:1.35;color:#52677d}.vocab-reward{background:#fff3bd;padding:10px 14px;border-radius:11px;font-weight:750;margin:10px 0}.vocab-flashcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:12px}.vocab-flashcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:132px;width:100%;padding:14px 10px;border:2px solid var(--flash-border,#6c8dd9);border-radius:16px;background:var(--flash-bg,#f0f5ff);color:var(--ink);box-shadow:0 4px 16px #26344a08;text-align:center;overflow-wrap:anywhere}.vocab-flashcard[aria-pressed=true]{background:var(--flash-back,#e0edff);border-color:var(--flash-border,#6c8dd9)}.vocab-flashcard:nth-child(6n+1){--flash-border:#e36a9d;--flash-bg:#fff1f6;--flash-back:#ffe0ec}.vocab-flashcard:nth-child(6n+2){--flash-border:#5e92e0;--flash-bg:#eef5ff;--flash-back:#dceaff}.vocab-flashcard:nth-child(6n+3){--flash-border:#55ab84;--flash-bg:#edf9f1;--flash-back:#d9f1e2}.vocab-flashcard:nth-child(6n+4){--flash-border:#d9ac35;--flash-bg:#fff9e6;--flash-back:#fff0b5}.vocab-flashcard:nth-child(6n+5){--flash-border:#a17bd5;--flash-bg:#f7f0ff;--flash-back:#ecddff}.vocab-flashcard:nth-child(6n){--flash-border:#e59a51;--flash-bg:#fff4e9;--flash-back:#ffe6cd}.vocab-flashcard strong{font-size:1.12rem;line-height:1.35}.vocab-flashcard small{color:#52677d;font-size:.75rem;line-height:1.3}.vocab-flashcard:focus-visible{outline:3px solid #ffb540;outline-offset:3px}.vocab-sentence{font-size:1.3rem;line-height:1.9}.vocab-bank{display:flex;flex-wrap:wrap;gap:8px}.vocab-bank span{background:white;padding:4px 12px;border:1px solid #d7dfea;border-radius:14px}.vocab-progress{font-weight:700;color:#4563a1}.vocab-new{font-size:.8rem;color:#4563a1;font-weight:700}.vocab-end{font-size:1.3rem}@media(max-width:300px){.vocab-flashcards{grid-template-columns:1fr}}`;
 document.head.appendChild(vocabStyle);
 function vocabModel() {
   if (!state.__vocabV2) state.__vocabV2 = {completed:[],current:null,finished:false};
@@ -96,8 +136,9 @@ function vocabNextSet() {
 function vocabBatchVerify() {
   const fields=[...document.querySelectorAll('[data-answer]')];let good=0;
   fields.forEach(el=>{const ok=el.dataset.answer.split('|').map(norm).includes(norm(el.value));good+=Number(ok);el.classList.toggle('good',ok);el.classList.toggle('bad',!ok);});
+  const earned=vocabAward(fields.filter(el=>el.dataset.answer.split('|').map(norm).includes(norm(el.value))).map(el=>Number(el.dataset.id)));
   const done=fields.length>0&&fields.every(el=>el.value.trim());vocabModel().verified=done;saveProgress();
-  $('#score').innerHTML=`<div class="result">${good} din ${fields.length} răspunsuri corecte. ${good===fields.length?'Bravo! 🌟':done?'Poți corecta răspunsurile sau poți continua cu un alt set.':'Completează toate răspunsurile înainte să ceri alt set.'}</div>`+(good===fields.length?certificateUnlock():'');
+  $('#score').innerHTML=`<div class="result">${good} din ${fields.length} răspunsuri corecte. ${good===fields.length?'Bravo! 🌟':done?'Poți corecta răspunsurile sau poți continua cu un alt set.':'Completează toate răspunsurile înainte să ceri alt set.'}</div>`+vocabRewardMessage(earned);
   $('#vocab-next-set').disabled=!done;
 }
 function vocabGapVerify() {
@@ -105,9 +146,10 @@ function vocabGapVerify() {
   const ok=VOCAB_GAPS[i][1].split('|').map(norm).includes(norm(el.value));
   el.classList.toggle('good',ok);el.classList.toggle('bad',!ok);
   if(ok&&!m.completed.includes(i))m.completed.push(i);
+  const earned=ok?vocabAward([i]):0;
   m.verified=ok;saveProgress();
   const counter=$('#vocab-completed');if(counter)counter.textContent=m.completed.length+' propoziții completate corect';
-  $('#score').innerHTML=`<div class="result">${ok?'Corect! 🌟 Ai completat '+m.completed.length+' '+(m.completed.length===1?'propoziție.':'propoziții.'):'Mai încearcă! Poți folosi indiciul și poți corecta răspunsul.'}</div>`;
+  $('#score').innerHTML=`<div class="result">${ok?'Corect! 🌟 Ai completat '+m.completed.length+' '+(m.completed.length===1?'propoziție.':'propoziții.'):'Mai încearcă! Poți folosi indiciul și poți corecta răspunsul.'}</div>`+vocabRewardMessage(earned);
   $('#vocab-next-gap').hidden=!ok;
 }
 function vocabNextGap() {
@@ -130,7 +172,7 @@ function vocabRenderGaps() {
 }
 renderVocab = function(level) {
   vocabApplyReleases();
-  if(!level)return view(`<div class="hero"><h2>🌱 Vocabular</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p><div class="rule"><b>REȚINE!</b> Cuvintele cu sens asemănător exprimă idei apropiate. Cuvintele cu sens opus exprimă idei contrare.</div></div><div class="cards">${card('📖 Învață – Flashcarduri','Toate cuvintele pe o singură pagină. Cele noi sunt primele.','go("llr","vocab","learn")')}${card('1. Găsește perechea','10 cuvinte în fiecare rundă','go("llr","vocab","match")')}${card('2. Scrie cuvinte cu sens asemănător','10 cuvinte și un indiciu la nevoie','go("llr","vocab","similar")')}${card('3. Completează propozițiile','O propoziție pe rând. Te oprești când vrei.','go("llr","vocab","gaps")')}${card('⭐ Bonus: Cuvinte cu sens opus','Descoperă contrariile','go("llr","vocab","opposite")')}</div>`);
+  if(!level)return view(`<div class="hero"><h2>🌱 Vocabular</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p><div class="rule"><b>REȚINE!</b> Cuvintele cu sens asemănător exprimă idei apropiate. Cuvintele cu sens opus exprimă idei contrare.</div></div><div class="cards">${card('📖 Învață – Flashcarduri','Toate cuvintele pe o singură pagină. Cele noi sunt primele.','go("llr","vocab","learn")')}${card('1. Găsește perechea','10 cuvinte în fiecare rundă','go("llr","vocab","match")')}${card('2. Scrie cuvinte cu sens asemănător','Seturi de 10 cuvinte și indicii dacă ai nevoie :)','go("llr","vocab","similar")')}${card('3. Completează propozițiile','O propoziție pe rând. Te oprești când vrei.','go("llr","vocab","gaps")')}${card('⭐ Bonus: Cuvinte cu sens opus','Descoperă contrariile','go("llr","vocab","opposite")')}</div>`);
   if(level==='learn'){
     const ids=VOCAB.map((_,i)=>i).sort((a,b)=>((vocabDates.get(b)||Date.parse(VOCAB[b][4])||0)-(vocabDates.get(a)||Date.parse(VOCAB[a][4])||0)) || (b>=23||a>=23?b-a:a-b));
     return view(`<div class="hero"><h2>📖 Învață – Flashcarduri</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p></div><div class="vocab-flashcards">${ids.map(i=>`<button type="button" class="vocab-flashcard" aria-pressed="false" onclick="vocabFlip(this,${i})"><small>Cuvânt</small><strong>${esc(VOCAB[i][0])}</strong><small>Întoarce ↻</small></button>`).join('')}</div>`);
