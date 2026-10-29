@@ -226,24 +226,24 @@ function vocabRenderGaps() {
   view(`<div class="hero"><h2>💬 Completează propozițiile</h2><p>Scrie numai cuvântul lipsă, la forma potrivită. Apasă „Ajutor” dacă ai nevoie de un indiciu.</p><p id="vocab-completed" class="vocab-progress" aria-live="polite">${vocabSentenceCount(m.completed.length)}</p></div><div class="panel"><p class="vocab-sentence">${esc(q)}</p>${vocabEntry(i,a)} <button class="btn alt" onclick="vocabHelp(${i})">💡 Ajutor</button><div id="vh${i}"></div><div class="row"><button class="btn" onclick="vocabGapVerify()">✓ Verifică</button><button id="vocab-next-gap" class="btn" onclick="vocabNextGap()" ${m.verified?'':'hidden'}>Următoarea propoziție →</button></div><div id="score" aria-live="polite"></div><button class="btn alt" onclick="vocabStop()">Mă opresc aici</button></div>`);
 }
 const VOCAB_BONUS = {
-  'tandră':['duioasă','cu mustață de frișcă'],
-  'înmiresmată':['aromată','încălțată cu banane'],
-  'a cuteza':['a avea curaj','a gâdila un nor'],
-  'impozant':['grandios','cu pijamale cu buline'],
-  'ghidus':['poznaș','crocant ca un biscuit'],
-  'feroce':['crud','cu papuci de iepuraș'],
-  'mâhnit':['supărat','rotund ca o gogoașă'],
-  'sfios':['rușinos','parfumat cu supă'],
-  'vitală':['necesară','zburătoare ca o clătită','neesențială'],
-  'fertil':['productiv','cu mustăți de morcov'],
-  'a pizmui':['a fi invidios','a pieptăna o banană'],
-  'a făgădui':['a-și da cuvântul','a cânta cu o roșie'],
-  'a consola':['a alina','a învăța un cartof să danseze']
+  'tandră':['duioasă','salamandră'],
+  'înmiresmată':['aromată','înghețată'],
+  'a cuteza':['a avea curaj','a ateriza'],
+  'impozant':['grandios','elefant'],
+  'ghidus':['poznaș','cărăbuș'],
+  'feroce':['crud','voce'],
+  'mâhnit':['supărat','biscuit'],
+  'sfios':['rușinos','pufos'],
+  'vitală':['necesară','portocală','neesențială'],
+  'fertil':['productiv','crocodil'],
+  'a pizmui':['a fi invidios','a chiui'],
+  'a făgădui':['a-și da cuvântul','a găzdui'],
+  'a consola':['a alina','a decola']
 };
 function vocabOppositeEntries(){return VOCAB.map((v,i)=>({v,i,extra:(window.VOCAB_ADDITIONS||[]).find(x=>x.word===v[0])})).filter(x=>x.v[2]&&(VOCAB_BONUS[x.v[0]]||x.extra?.bonusSimilar));}
 function vocabOppositeChoices(entry){
   const {v,extra}=entry,meta=VOCAB_BONUS[v[0]];
-  return {correct:meta?.[2]||v[2],similar:[v[1],meta?.[0]||extra.bonusSimilar],funny:meta?.[1]||extra.bonusFunny};
+  return {correct:meta?.[2]||v[2],similar:[v[1],meta?.[0]||extra.bonusSimilar],rhyme:meta?.[1]||extra.bonusRhyme};
 }
 function vocabPickOpposite(i,value){vocabSetval('op'+i,value);renderVocab('opposite');}
 function vocabOppositeVerify(){
@@ -256,7 +256,7 @@ function vocabRenderOpposite(){
   m.bonusIds=entries.map(x=>x.i);m.bonusOptions=m.bonusOptions||{};
   const body=entries.map(entry=>{
     const {v,i}=entry,choices=vocabOppositeChoices(entry);
-    if(!m.bonusOptions[i])m.bonusOptions[i]=vocabShuffle([...choices.similar,choices.funny,choices.correct]);
+    if(!m.bonusOptions[i])m.bonusOptions[i]=vocabShuffle([...choices.similar,choices.rhyme,choices.correct]);
     return `<div class="task"><p><b>${esc(v[0])}</b></p><div class="options">${m.bonusOptions[i].map(option=>`<button type="button" class="option ${val('op'+i)===option?'chosen':''}" aria-pressed="${val('op'+i)===option}" onclick="vocabPickOpposite(${i},${esc(JSON.stringify(option))})">${esc(option)}</button>`).join('')}</div><input type="hidden" data-id="op${i}" data-word-index="${i}" data-answer="${esc(choices.correct)}" value="${esc(val('op'+i))}"></div>`;
   }).join('');
   saveProgress();

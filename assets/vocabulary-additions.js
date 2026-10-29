@@ -25,7 +25,7 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-02T07:00:00+02:00",
     "opposite": "răsfirat",
     "bonusSimilar": "înghesuit",
-    "bonusFunny": "împachetat în clătite"
+    "bonusRhyme": "desenat"
   },
   {
     "word": "bură",
@@ -64,7 +64,7 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-04T07:00:00+02:00",
     "opposite": "foarte mari",
     "bonusSimilar": "mititei",
-    "bonusFunny": "cu pălării din clătite"
+    "bonusRhyme": "o groapă"
   },
   {
     "word": "mărinimos",
@@ -76,7 +76,7 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-04T07:00:00+02:00",
     "opposite": "zgârcit",
     "bonusSimilar": "darnic",
-    "bonusFunny": "cu mustață de ciocolată"
+    "bonusRhyme": "pufos"
   },
   {
     "word": "compasiune",
@@ -88,7 +88,7 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-04T07:00:00+02:00",
     "opposite": "nepăsare",
     "bonusSimilar": "îndurare",
-    "bonusFunny": "poftă de șosete prăjite"
+    "bonusRhyme": "minune"
   },
   {
     "word": "ștrengăriță",
@@ -100,7 +100,7 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-04T07:00:00+02:00",
     "opposite": "cuminte",
     "bonusSimilar": "năzdrăvană",
-    "bonusFunny": "îmbrăcată în macaroane"
+    "bonusRhyme": "furculiță"
   },
   {
     "word": "a nimici",
@@ -112,7 +112,7 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-04T07:00:00+02:00",
     "opposite": "a crea",
     "bonusSimilar": "a prăpădi",
-    "bonusFunny": "a gâdila un castravete"
+    "bonusRhyme": "a ghici"
   },
   {
     "word": "botine",
@@ -133,7 +133,7 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-04T07:00:00+02:00",
     "opposite": "stătea pe loc",
     "bonusSimilar": "forfotea",
-    "bonusFunny": "mesteca nori de zahăr"
+    "bonusRhyme": "Miruna"
   },
   {
     "word": "cristalină",
@@ -145,7 +145,7 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-04T07:00:00+02:00",
     "opposite": "tulbure",
     "bonusSimilar": "străvezie",
-    "bonusFunny": "cu papuci de jeleu"
+    "bonusRhyme": "plastilină"
   },
   {
     "word": "a se fâstâci",
@@ -157,7 +157,7 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-04T07:00:00+02:00",
     "opposite": "a se descurca",
     "bonusSimilar": "a se zăpăci",
-    "bonusFunny": "a se transforma în gogoașă"
+    "bonusRhyme": "a ghici"
   },
   {
     "word": "lin",
@@ -169,6 +169,6 @@ window.VOCAB_ADDITIONS = [
     "releaseAt": "2026-11-04T07:00:00+02:00",
     "opposite": "vijelios",
     "bonusSimilar": "liniștit",
-    "bonusFunny": "somnoros ca un cartof"
+    "bonusRhyme": "pinguin"
   }
 ];
