@@ -17,10 +17,13 @@ function vocabProgressContent(){
 }
 function vocabProgressWidget(){return `<section id="vocab-points" class="vocab-score" aria-label="Progresul meu">${vocabProgressContent()}</section>`;}
 function vocabAward(ids){
-  const p=vocabReadProgress(),today=vocabToday();let earned=0;
+  const p=vocabReadProgress(),today=vocabToday(),m=vocabModel();let earned=0;
+  p.awards=p.awards||{};
   for(const i of new Set(ids)){
     if(!VOCAB[i])continue;const word=VOCAB[i][0],id=norm(word);
-    if(p.words[id]?.lastDay===today)continue;
+    const event=m.awardToken+':'+id;
+    if(p.awards[event])continue;
+    p.awards[event]=true;
     p.words[id]={word,lastDay:today};p.points++;earned++;
   }
   if(earned)try{localStorage.setItem(vocabProgressKey,JSON.stringify(p));}catch(e){}
@@ -31,6 +34,16 @@ function vocabRewardMessage(earned){return earned?`<div class="vocab-reward" rol
 function vocabQuickNav(){
   if(!route[2])return '';
   return `<nav class="vocab-tabs" aria-label="Alege activitatea">${[['learn','📖 Învață'],['match','Nivelul 1'],['similar','Nivelul 2'],['gaps','Propoziții'],['opposite','Sens opus']].map(([id,label])=>`<button type="button" ${route[2]===id?'aria-current="page"':''} onclick="go('llr','vocab','${id}')">${label}</button>`).join('')}</nav>`;
+}
+const vocabOriginalLoadProgress=loadProgress;
+loadProgress=function(){return route[0]==='llr'&&route[1]==='vocab'&&route[2]&&route[2]!=='learn'?{}:vocabOriginalLoadProgress();};
+function vocabSentenceCount(n){return n+' '+(n===1?'propoziție completată corect':'propoziții completate corect');}
+function vocabRepeatRound(){
+  const m=vocabModel();
+  if(route[2]==='opposite'){m.bonusIds.forEach(i=>delete state[key('op'+i)]);}
+  else m.batch.forEach(i=>delete state[key(i)]);
+  m.awardToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);m.verified=false;
+  diplomaReadyFor='';saveProgress();render();window.scrollTo(0,0);
 }
 const vocabOriginalView=view;
 view=function(html){return vocabOriginalView(route[0]==='llr'&&route[1]==='vocab'?vocabProgressWidget()+vocabQuickNav()+html:html);};
@@ -67,12 +80,13 @@ window.addEventListener('focus',()=>{if(vocabApplyReleases()&&route[0]==='llr'&&
 vocabScheduleRelease();
 FRIENDLY_ROUTES['vocabular/invata'] = ['llr','vocab','learn'];
 const vocabStyle = document.createElement('style');
-vocabStyle.textContent = `.vocab-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}.vocab-tabs button{border:1px solid #b7cbea;border-radius:10px;background:#fff;color:#34517e;padding:8px 12px;font-weight:650}.vocab-tabs button[aria-current=page]{background:#436dd0;color:#fff;border-color:#436dd0}.vocab-tabs button:focus-visible{outline:3px solid #ffb540;outline-offset:2px}.vocab-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 16px}.vocab-score>div{border:1px solid #d3dfed;background:#fff9e8;border-radius:13px;padding:10px;text-align:center}.vocab-score>div:nth-child(2){background:#edf8f1}.vocab-score>div:nth-child(3){background:#eef3ff}.vocab-score strong{display:block;font-size:1.2rem;color:#304c7d}.vocab-score small{display:block;font-size:.76rem;line-height:1.35;color:#52677d}.vocab-reward{background:#fff3bd;padding:10px 14px;border-radius:11px;font-weight:750;margin:10px 0}.vocab-flashcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:12px}.vocab-flashcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:132px;width:100%;padding:14px 10px;border:2px solid var(--flash-border,#6c8dd9);border-radius:16px;background:var(--flash-bg,#f0f5ff);color:var(--ink);box-shadow:0 4px 16px #26344a08;text-align:center;overflow-wrap:anywhere}.vocab-flashcard[aria-pressed=true]{background:var(--flash-back,#e0edff);border-color:var(--flash-border,#6c8dd9)}.vocab-flashcard:nth-child(6n+1){--flash-border:#e36a9d;--flash-bg:#fff1f6;--flash-back:#ffe0ec}.vocab-flashcard:nth-child(6n+2){--flash-border:#5e92e0;--flash-bg:#eef5ff;--flash-back:#dceaff}.vocab-flashcard:nth-child(6n+3){--flash-border:#55ab84;--flash-bg:#edf9f1;--flash-back:#d9f1e2}.vocab-flashcard:nth-child(6n+4){--flash-border:#d9ac35;--flash-bg:#fff9e6;--flash-back:#fff0b5}.vocab-flashcard:nth-child(6n+5){--flash-border:#a17bd5;--flash-bg:#f7f0ff;--flash-back:#ecddff}.vocab-flashcard:nth-child(6n){--flash-border:#e59a51;--flash-bg:#fff4e9;--flash-back:#ffe6cd}.vocab-flashcard strong{font-size:1.12rem;line-height:1.35}.vocab-flashcard small{color:#52677d;font-size:.75rem;line-height:1.3}.vocab-flashcard:focus-visible{outline:3px solid #ffb540;outline-offset:3px}.vocab-sentence{font-size:1.3rem;line-height:1.9}.vocab-bank{display:flex;flex-wrap:wrap;gap:8px}.vocab-bank span{background:white;padding:4px 12px;border:1px solid #d7dfea;border-radius:14px}.vocab-progress{font-weight:700;color:#4563a1}.vocab-new{font-size:.8rem;color:#4563a1;font-weight:700}.vocab-end{font-size:1.3rem}@media(max-width:300px){.vocab-flashcards{grid-template-columns:1fr}}`;
+vocabStyle.textContent = `.vocab-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}.vocab-tabs button{border:1px solid #b7cbea;border-radius:10px;background:#fff;color:#34517e;padding:8px 12px;font-weight:650}.vocab-tabs button[aria-current=page]{background:#436dd0;color:#fff;border-color:#436dd0}.vocab-tabs button:focus-visible{outline:3px solid #ffb540;outline-offset:2px}.vocab-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 16px}.vocab-score>div{border:1px solid #d3dfed;background:#fff9e8;border-radius:13px;padding:10px;text-align:center}.vocab-score>div:nth-child(2){background:#edf8f1}.vocab-score>div:nth-child(3){background:#eef3ff}.vocab-score strong{display:block;font-size:1.2rem;color:#304c7d}.vocab-score small{display:block;font-size:.76rem;line-height:1.35;color:#52677d}.vocab-reward{background:#fff3bd;padding:10px 14px;border-radius:11px;font-weight:750;margin:10px 0}.vocab-flashcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:12px}.vocab-flashcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:132px;width:100%;padding:14px 10px;border:2px solid var(--flash-border,#6c8dd9);border-radius:16px;background:var(--flash-bg,#f0f5ff);color:var(--ink);box-shadow:0 4px 16px #26344a08;text-align:center;overflow-wrap:anywhere}.vocab-flashcard[aria-pressed=true]{background:var(--flash-back,#e0edff);border-color:var(--flash-border,#6c8dd9)}.vocab-flashcard[data-color=pink]{--flash-border:#e36a9d;--flash-bg:#fff1f6;--flash-back:#ffe0ec}.vocab-flashcard[data-color=blue]{--flash-border:#5e92e0;--flash-bg:#eef5ff;--flash-back:#dceaff}.vocab-flashcard[data-color=green]{--flash-border:#55ab84;--flash-bg:#edf9f1;--flash-back:#d9f1e2}.vocab-flashcard[data-color=yellow]{--flash-border:#d9ac35;--flash-bg:#fff9e6;--flash-back:#fff0b5}.vocab-flashcard[data-color=purple]{--flash-border:#a17bd5;--flash-bg:#f7f0ff;--flash-back:#ecddff}.vocab-flashcard[data-color=orange]{--flash-border:#e59a51;--flash-bg:#fff4e9;--flash-back:#ffe6cd}.vocab-flashcard strong{font-size:1.12rem;line-height:1.35}.vocab-flashcard small{color:#52677d;font-size:.75rem;line-height:1.3}.vocab-flashcard:focus-visible{outline:3px solid #ffb540;outline-offset:3px}.vocab-sentence{font-size:1.3rem;line-height:1.9}.vocab-bank{display:flex;flex-wrap:wrap;gap:8px}.vocab-bank span{background:white;padding:4px 12px;border:1px solid #d7dfea;border-radius:14px}.vocab-progress{font-weight:700;color:#4563a1}.vocab-new{font-size:.8rem;color:#4563a1;font-weight:700}.vocab-end{font-size:1.3rem}@media(max-width:300px){.vocab-flashcards{grid-template-columns:1fr}}`;
 document.head.appendChild(vocabStyle);
 function vocabModel() {
   if (!state.__vocabV2) state.__vocabV2 = {completed:[],current:null,finished:false};
   const m=state.__vocabV2;
   if(m.version!==3){m.version=3;m.seen=[];m.batch=[];m.round=1;m.verified=false;m.practiceCounts={};}
+  if(!m.awardToken)m.awardToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
   return m;
 }
 // Familiar classroom words get a modest preference when repeats are needed.
@@ -101,6 +115,7 @@ function vocabEnsureBatch() {
     add(vocabWeightedOrder(all.filter(i=>!m.seen.includes(i))),10);
     add(vocabWeightedOrder(all),10);
     m.batch=vocabShuffle(selected);
+    m.awardToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
     m.seen=[...new Set([...m.seen,...m.batch])];
     m.batch.forEach(i=>{m.practiceCounts[i]=(m.practiceCounts[i]||0)+1;delete state[key(i)];});
     m.verified=false;saveProgress();
@@ -123,9 +138,18 @@ function vocabSimilarHelp(i) {
   const hint=$('#vsh'+i);hint.hidden=!hint.hidden;
   hint.textContent='Începe așa: '+vocabLetterHint(VOCAB[i][1]);
 }
+function vocabFlashColors(count){
+  const colors=[];
+  while(colors.length<count){
+    const group=vocabShuffle(['pink','blue','green','yellow','purple','orange']);
+    if(group[0]===colors[colors.length-1])[group[0],group[1]]=[group[1],group[0]];
+    colors.push(...group);
+  }
+  return colors.slice(0,count);
+}
 function vocabFlip(button,i) {
   const back=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(back));
-  button.innerHTML=`<small>${back?'Sensul cuvântului':'Cuvânt'}</small><strong>${esc(VOCAB[i][back?1:0])}</strong><small>Întoarce ↻</small>`;
+  button.innerHTML=`<small>${back?'Explicație':'Cuvânt'}</small><strong>${esc(VOCAB[i][back?1:0])}</strong><small>Întoarce ↻</small>`;
 }
 function vocabNextSet() {
   const m=vocabModel();if(!m.verified)return;
@@ -148,7 +172,7 @@ function vocabGapVerify() {
   if(ok&&!m.completed.includes(i))m.completed.push(i);
   const earned=ok?vocabAward([i]):0;
   m.verified=ok;saveProgress();
-  const counter=$('#vocab-completed');if(counter)counter.textContent=m.completed.length+' propoziții completate corect';
+  const counter=$('#vocab-completed');if(counter)counter.textContent=vocabSentenceCount(m.completed.length);
   $('#score').innerHTML=`<div class="result">${ok?'Corect! 🌟 Ai completat '+m.completed.length+' '+(m.completed.length===1?'propoziție.':'propoziții.'):'Mai încearcă! Poți folosi indiciul și poți corecta răspunsul.'}</div>`+vocabRewardMessage(earned);
   $('#vocab-next-gap').hidden=!ok;
 }
@@ -168,20 +192,59 @@ function vocabRenderGaps() {
     m.current=vocabWeightedOrder(ids.filter(i=>!m.completed.includes(i)))[0];m.verified=false;saveProgress();
   }
   const i=m.current,[q,a]=VOCAB_GAPS[i];
-  view(`<div class="hero"><h2>Nivelul 3 – Completează propozițiile</h2><p>Scrie numai cuvântul lipsă, la forma potrivită. Apasă „Ajutor” dacă ai nevoie de un indiciu.</p><p id="vocab-completed" class="vocab-progress" aria-live="polite">${m.completed.length} propoziții completate corect</p></div><div class="panel"><p class="vocab-sentence">${esc(q)}</p>${vocabEntry(i,a)} <button class="btn alt" onclick="vocabHelp(${i})">💡 Ajutor</button><div id="vh${i}"></div><div class="row"><button class="btn" onclick="vocabGapVerify()">✓ Verifică</button><button id="vocab-next-gap" class="btn" onclick="vocabNextGap()" ${m.verified?'':'hidden'}>Următoarea propoziție →</button></div><div id="score" aria-live="polite"></div><button class="btn alt" onclick="vocabStop()">Mă opresc aici</button></div>`);
+  view(`<div class="hero"><h2>Nivelul 3 – Completează propozițiile</h2><p>Scrie numai cuvântul lipsă, la forma potrivită. Apasă „Ajutor” dacă ai nevoie de un indiciu.</p><p id="vocab-completed" class="vocab-progress" aria-live="polite">${vocabSentenceCount(m.completed.length)}</p></div><div class="panel"><p class="vocab-sentence">${esc(q)}</p>${vocabEntry(i,a)} <button class="btn alt" onclick="vocabHelp(${i})">💡 Ajutor</button><div id="vh${i}"></div><div class="row"><button class="btn" onclick="vocabGapVerify()">✓ Verifică</button><button id="vocab-next-gap" class="btn" onclick="vocabNextGap()" ${m.verified?'':'hidden'}>Următoarea propoziție →</button></div><div id="score" aria-live="polite"></div><button class="btn alt" onclick="vocabStop()">Mă opresc aici</button></div>`);
+}
+const VOCAB_BONUS = {
+  'tandră':['duioasă','cu mustață de frișcă'],
+  'înmiresmată':['aromată','încălțată cu banane'],
+  'a cuteza':['a avea curaj','a gâdila un nor'],
+  'impozant':['grandios','cu pijamale cu buline'],
+  'ghidus':['poznaș','crocant ca un biscuit'],
+  'feroce':['crud','cu papuci de iepuraș'],
+  'mâhnit':['supărat','rotund ca o gogoașă'],
+  'sfios':['rușinos','parfumat cu supă'],
+  'vitală':['necesară','zburătoare ca o clătită','neesențială'],
+  'fertil':['productiv','cu mustăți de morcov'],
+  'a pizmui':['a fi invidios','a pieptăna o banană'],
+  'a făgădui':['a-și da cuvântul','a cânta cu o roșie'],
+  'a consola':['a alina','a învăța un cartof să danseze']
+};
+function vocabOppositeEntries(){return VOCAB.map((v,i)=>({v,i,extra:(window.VOCAB_ADDITIONS||[]).find(x=>x.word===v[0])})).filter(x=>x.v[2]&&(VOCAB_BONUS[x.v[0]]||x.extra?.bonusSimilar));}
+function vocabOppositeChoices(entry){
+  const {v,extra}=entry,meta=VOCAB_BONUS[v[0]];
+  return {correct:meta?.[2]||v[2],similar:[v[1],meta?.[0]||extra.bonusSimilar],funny:meta?.[1]||extra.bonusFunny};
+}
+function vocabPickOpposite(i,value){vocabSetval('op'+i,value);renderVocab('opposite');}
+function vocabOppositeVerify(){
+  let good=0,ids=[];const fields=[...document.querySelectorAll('[data-answer]')];
+  for(const field of fields){const ok=norm(field.value)===norm(field.dataset.answer);field.classList.toggle('good',ok);field.classList.toggle('bad',!ok);if(ok){good++;ids.push(Number(field.dataset.wordIndex));}}
+  const earned=vocabAward(ids);$('#score').innerHTML=`<div class="result">${good} din ${fields.length} răspunsuri corecte. ${good===fields.length?'Bravo! 🌟':'Mai încearcă! 🌱'}</div>`+vocabRewardMessage(earned);
+}
+function vocabRenderOpposite(){
+  const m=vocabModel(),entries=vocabOppositeEntries();
+  m.bonusIds=entries.map(x=>x.i);m.bonusOptions=m.bonusOptions||{};
+  const body=entries.map(entry=>{
+    const {v,i}=entry,choices=vocabOppositeChoices(entry);
+    if(!m.bonusOptions[i])m.bonusOptions[i]=vocabShuffle([...choices.similar,choices.funny,choices.correct]);
+    return `<div class="task"><p><b>${esc(v[0])}</b></p><div class="options">${m.bonusOptions[i].map(option=>`<button type="button" class="option ${val('op'+i)===option?'chosen':''}" aria-pressed="${val('op'+i)===option}" onclick="vocabPickOpposite(${i},${esc(JSON.stringify(option))})">${esc(option)}</button>`).join('')}</div><input type="hidden" data-id="op${i}" data-word-index="${i}" data-answer="${esc(choices.correct)}" value="${esc(val('op'+i))}"></div>`;
+  }).join('');
+  saveProgress();
+  view(`<div class="hero"><h2>⭐ Cuvinte cu sens opus</h2><p>Alege cuvântul cu sens opus! 🌟</p></div><div class="panel">${body}<div class="row"><button class="btn" onclick="vocabOppositeVerify()">✓ Verifică</button><button class="btn alt" onclick="vocabRepeatRound()">↺ Repetă runda</button></div><div id="score" aria-live="polite"></div></div>`);
 }
 renderVocab = function(level) {
   vocabApplyReleases();
   if(!level)return view(`<div class="hero"><h2>🌱 Vocabular</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p><div class="rule"><b>REȚINE!</b> Cuvintele cu sens asemănător exprimă idei apropiate. Cuvintele cu sens opus exprimă idei contrare.</div></div><div class="cards">${card('📖 Învață – Flashcarduri','Toate cuvintele pe o singură pagină. Cele noi sunt primele.','go("llr","vocab","learn")')}${card('1. Găsește perechea','10 cuvinte în fiecare rundă','go("llr","vocab","match")')}${card('2. Scrie cuvinte cu sens asemănător','Seturi de 10 cuvinte și indicii dacă ai nevoie :)','go("llr","vocab","similar")')}${card('3. Completează propozițiile','O propoziție pe rând. Te oprești când vrei.','go("llr","vocab","gaps")')}${card('⭐ Bonus: Cuvinte cu sens opus','Descoperă contrariile','go("llr","vocab","opposite")')}</div>`);
   if(level==='learn'){
     const ids=VOCAB.map((_,i)=>i).sort((a,b)=>((vocabDates.get(b)||Date.parse(VOCAB[b][4])||0)-(vocabDates.get(a)||Date.parse(VOCAB[a][4])||0)) || (b>=23||a>=23?b-a:a-b));
-    return view(`<div class="hero"><h2>📖 Învață – Flashcarduri</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p></div><div class="vocab-flashcards">${ids.map(i=>`<button type="button" class="vocab-flashcard" aria-pressed="false" onclick="vocabFlip(this,${i})"><small>Cuvânt</small><strong>${esc(VOCAB[i][0])}</strong><small>Întoarce ↻</small></button>`).join('')}</div>`);
+    const colors=vocabFlashColors(ids.length);
+    return view(`<div class="hero"><h2>📖 Învață – Flashcarduri</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p></div><div class="vocab-flashcards">${ids.map((i,j)=>`<button type="button" data-color="${colors[j]}" class="vocab-flashcard" aria-pressed="false" onclick="vocabFlip(this,${i})"><small>Cuvânt</small><strong>${esc(VOCAB[i][0])}</strong><small>Întoarce ↻</small></button>`).join('')}</div>`);
   }
   if(level==='gaps')return vocabRenderGaps();
+  if(level==='opposite')return vocabRenderOpposite();
   if(level!=='match'&&level!=='similar')return originalRenderVocab(level);
   const ids=vocabEnsureBatch(),m=vocabModel(),options=vocabShuffle(ids).map(i=>VOCAB[i][1]);
   const body=(level==='similar'?`<div class="rule"><b>Lista de cuvinte:</b><div class="vocab-bank">${options.map(o=>`<span>${esc(o)}</span>`).join('')}</div></div>`:'')+ids.map((i,j)=>`<div class="task"><label><b>${j+1}. ${esc(VOCAB[i][0])}</b> → ${level==='match'?`<select class="entry" style="width:260px;max-width:100%" aria-label="Sensul cuvântului ${esc(VOCAB[i][0])}" data-answer="${esc(VOCAB[i][1])}" data-id="${i}" onchange="vocabSetval('${i}',this.value)"><option value="">Alege perechea</option>${options.map(o=>`<option value="${esc(o)}" ${val(i)===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`:vocabEntry(i,VOCAB[i][1])}</label>${level==='similar'?` <button class="btn alt" onclick="vocabSimilarHelp(${i})">💡 Indiciu</button><div class="hint" id="vsh${i}" hidden></div>`:''}</div>`).join('');
-  view(`<div class="hero"><h2>${level==='match'?'Nivelul 1 – Găsește perechea':'Nivelul 2 – Sens asemănător'}</h2><p>${level==='match'?'Găsește perechile! 🌟':'Scrie perechile! 💡 Indiciul te ajută.'}</p><p class="vocab-progress">Runda ${m.round} · ${ids.length} cuvinte</p></div><div class="panel">${body}<div class="row"><button class="btn" onclick="vocabBatchVerify()">✓ Verifică</button><button class="btn alt" onclick="resetTask()">↺ Încep din nou</button></div><div id="score" aria-live="polite"></div><button id="vocab-next-set" class="btn pink" onclick="vocabNextSet()" ${m.verified?'':'disabled'}>Încă o rundă! →</button></div>`);
+  view(`<div class="hero"><h2>${level==='match'?'Nivelul 1 – Găsește perechea':'Nivelul 2 – Sens asemănător'}</h2><p>${level==='match'?'Găsește perechile! 🌟':'Scrie perechile! 💡 Indiciul te ajută.'}</p><p class="vocab-progress">Runda ${m.round} · ${ids.length} cuvinte</p></div><div class="panel">${body}<div class="row"><button class="btn" onclick="vocabBatchVerify()">✓ Verifică</button><button class="btn alt" onclick="vocabRepeatRound()">↺ Repetă runda</button></div><div id="score" aria-live="polite"></div><button id="vocab-next-set" class="btn pink" onclick="vocabNextSet()" ${m.verified?'':'disabled'}>Încă o rundă! →</button></div>`);
 };
 // The new route is registered before resolving a direct flashcard link.
 route=routeFromPath();state=loadProgress();render();

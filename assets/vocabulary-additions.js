@@ -22,7 +22,10 @@ window.VOCAB_ADDITIONS = [
     "answers": "îndesat",
     "lesson": "Luni",
     "addedAt": "2026-11-02T07:00:00+02:00",
-    "releaseAt": "2026-11-02T07:00:00+02:00"
+    "releaseAt": "2026-11-02T07:00:00+02:00",
+    "opposite": "răsfirat",
+    "bonusSimilar": "înghesuit",
+    "bonusFunny": "împachetat în clătite"
   },
   {
     "word": "bură",
@@ -58,7 +61,10 @@ window.VOCAB_ADDITIONS = [
     "answers": "de o șchioapă",
     "lesson": "Miercuri",
     "addedAt": "2026-11-04T07:00:00+02:00",
-    "releaseAt": "2026-11-04T07:00:00+02:00"
+    "releaseAt": "2026-11-04T07:00:00+02:00",
+    "opposite": "foarte mari",
+    "bonusSimilar": "mititei",
+    "bonusFunny": "cu pălării din clătite"
   },
   {
     "word": "mărinimos",
@@ -67,7 +73,10 @@ window.VOCAB_ADDITIONS = [
     "answers": "mărinimos",
     "lesson": "Miercuri",
     "addedAt": "2026-11-04T07:00:00+02:00",
-    "releaseAt": "2026-11-04T07:00:00+02:00"
+    "releaseAt": "2026-11-04T07:00:00+02:00",
+    "opposite": "zgârcit",
+    "bonusSimilar": "darnic",
+    "bonusFunny": "cu mustață de ciocolată"
   },
   {
     "word": "compasiune",
@@ -76,7 +85,10 @@ window.VOCAB_ADDITIONS = [
     "answers": "compasiune",
     "lesson": "Miercuri",
     "addedAt": "2026-11-04T07:00:00+02:00",
-    "releaseAt": "2026-11-04T07:00:00+02:00"
+    "releaseAt": "2026-11-04T07:00:00+02:00",
+    "opposite": "nepăsare",
+    "bonusSimilar": "îndurare",
+    "bonusFunny": "poftă de șosete prăjite"
   },
   {
     "word": "ștrengăriță",
@@ -85,7 +97,10 @@ window.VOCAB_ADDITIONS = [
     "answers": "ștrengăriță",
     "lesson": "Miercuri",
     "addedAt": "2026-11-04T07:00:00+02:00",
-    "releaseAt": "2026-11-04T07:00:00+02:00"
+    "releaseAt": "2026-11-04T07:00:00+02:00",
+    "opposite": "cuminte",
+    "bonusSimilar": "năzdrăvană",
+    "bonusFunny": "îmbrăcată în macaroane"
   },
   {
     "word": "a nimici",
@@ -94,7 +109,10 @@ window.VOCAB_ADDITIONS = [
     "answers": "nimici",
     "lesson": "Miercuri",
     "addedAt": "2026-11-04T07:00:00+02:00",
-    "releaseAt": "2026-11-04T07:00:00+02:00"
+    "releaseAt": "2026-11-04T07:00:00+02:00",
+    "opposite": "a crea",
+    "bonusSimilar": "a prăpădi",
+    "bonusFunny": "a gâdila un castravete"
   },
   {
     "word": "botine",
@@ -112,7 +130,10 @@ window.VOCAB_ADDITIONS = [
     "answers": "mișuna",
     "lesson": "Miercuri",
     "addedAt": "2026-11-04T07:00:00+02:00",
-    "releaseAt": "2026-11-04T07:00:00+02:00"
+    "releaseAt": "2026-11-04T07:00:00+02:00",
+    "opposite": "stătea pe loc",
+    "bonusSimilar": "forfotea",
+    "bonusFunny": "mesteca nori de zahăr"
   },
   {
     "word": "cristalină",
@@ -121,7 +142,10 @@ window.VOCAB_ADDITIONS = [
     "answers": "cristalină",
     "lesson": "Miercuri",
     "addedAt": "2026-11-04T07:00:00+02:00",
-    "releaseAt": "2026-11-04T07:00:00+02:00"
+    "releaseAt": "2026-11-04T07:00:00+02:00",
+    "opposite": "tulbure",
+    "bonusSimilar": "străvezie",
+    "bonusFunny": "cu papuci de jeleu"
   },
   {
     "word": "a se fâstâci",
@@ -130,7 +154,10 @@ window.VOCAB_ADDITIONS = [
     "answers": "a se fâstâci",
     "lesson": "Miercuri",
     "addedAt": "2026-11-04T07:00:00+02:00",
-    "releaseAt": "2026-11-04T07:00:00+02:00"
+    "releaseAt": "2026-11-04T07:00:00+02:00",
+    "opposite": "a se descurca",
+    "bonusSimilar": "a se zăpăci",
+    "bonusFunny": "a se transforma în gogoașă"
   },
   {
     "word": "lin",
@@ -139,6 +166,9 @@ window.VOCAB_ADDITIONS = [
     "answers": "lin",
     "lesson": "Miercuri",
     "addedAt": "2026-11-04T07:00:00+02:00",
-    "releaseAt": "2026-11-04T07:00:00+02:00"
+    "releaseAt": "2026-11-04T07:00:00+02:00",
+    "opposite": "vijelios",
+    "bonusSimilar": "liniștit",
+    "bonusFunny": "somnoros ca un cartof"
   }
 ];
