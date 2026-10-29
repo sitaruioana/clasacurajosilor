@@ -64,6 +64,9 @@ vocabVerify=function(){
   }
   const earned=vocabAward(ids);const score=$('#score');if(score)score.innerHTML+=vocabRewardMessage(earned);
 };
+// Existing classroom sequence: graniță was learned in first grade.
+// Keep data indices stable for exercises, saved points and sentence hints.
+const vocabInitialOrder = new Map(['graniță',...VOCAB.slice(0,23).map(v=>v[0])].map((word,i)=>[word,i]));
 const vocabDates = new Map();
 const vocabLessons = new Map();
 function vocabApplyReleases() {
@@ -102,6 +105,7 @@ const vocabCommon = new Set(['opinie','mâhnit','sfios','patrie','vitală','înd
 function vocabWeight(i) {
   const date=vocabDates.get(i)||Date.parse(VOCAB[i][4])||0;
   const familiar=vocabCommon.has(VOCAB[i][0])?2.5:1;
+  if(vocabInitialOrder.has(VOCAB[i][0]))return familiar;
   return date?familiar+5*Math.exp(-Math.max(0,(Date.now()-date)/86400000)/30):familiar;
 }
 function vocabWeightedOrder(ids, random = Math.random) {
@@ -145,6 +149,13 @@ function vocabLetterHint(answer) {
 function vocabSimilarHelp(i) {
   const hint=$('#vsh'+i);hint.hidden=!hint.hidden;
   hint.textContent='Începe așa: '+vocabLetterHint(VOCAB[i][1]);
+}
+function vocabFlashOrder(){
+  return VOCAB.map((_,i)=>i).sort((a,b)=>{
+    const dateDifference=(vocabDates.get(b)||Date.parse(VOCAB[b][4])||0)-(vocabDates.get(a)||Date.parse(VOCAB[a][4])||0);
+    if(dateDifference)return dateDifference;
+    return (vocabInitialOrder.get(VOCAB[b][0])??(24+b))-(vocabInitialOrder.get(VOCAB[a][0])??(24+a));
+  });
 }
 function vocabFlashColors(count){
   const colors=[];
@@ -255,7 +266,7 @@ renderVocab = function(level) {
   vocabApplyReleases();
   if(!level)return view(`<div class="hero"><h2>🌱 Vocabular</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p><div class="rule"><b>REȚINE!</b> Cuvintele cu sens asemănător exprimă idei apropiate. Cuvintele cu sens opus exprimă idei contrare.</div></div><div class="cards vocab-activities">${card('📖 Învață – Flashcarduri','Toate cuvintele, mereu la îndemână','go("llr","vocab","learn")')}${card('🧩 Găsește perechea','10 cuvinte în fiecare rundă','go("llr","vocab","match")')}${card('✏️ Scrie cuvinte cu sens asemănător','Seturi de 10 cuvinte și indicii dacă ai nevoie :)','go("llr","vocab","similar")')}${card('💬 Completează propozițiile','Propoziții pe rând, în ritmul tău','go("llr","vocab","gaps")')}${card('⭐ Cuvinte cu sens opus','Descoperă contrariile','go("llr","vocab","opposite")')}</div>`);
   if(level==='learn'){
-    const ids=VOCAB.map((_,i)=>i).sort((a,b)=>((vocabDates.get(b)||Date.parse(VOCAB[b][4])||0)-(vocabDates.get(a)||Date.parse(VOCAB[a][4])||0)) || (b>=23||a>=23?b-a:a-b));
+    const ids=vocabFlashOrder();
     const colors=vocabFlashColors(ids.length),firstExplanation=vocabExplanationFirst();
     return view(`<div class="hero"><h2>📖 Învață – Flashcarduri</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p></div><div class="vocab-flashcards">${ids.map((i,j)=>`<button type="button" data-color="${colors[j]}" data-first-side="${firstExplanation?'explanation':'word'}" class="vocab-flashcard" aria-pressed="false" onclick="vocabFlip(this,${i})"><small>${firstExplanation?'Explicație':'Cuvânt'}</small><strong>${esc(VOCAB[i][firstExplanation?1:0])}</strong><small>Întoarce ↻</small></button>`).join('')}</div>`);
   }
