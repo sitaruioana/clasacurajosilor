@@ -147,9 +147,21 @@ function vocabFlashColors(count){
   }
   return colors.slice(0,count);
 }
+// Alternate the initial face every 14 calendar days in Europe/Bucharest.
+function vocabExplanationFirst(){
+  const days=Math.floor((Date.parse(vocabToday()+'T00:00:00Z')-Date.UTC(2026,9,30))/86400000);
+  return Math.floor(Math.max(0,days)/14)%2===1;
+}
+let vocabLastFrontSide=vocabExplanationFirst();
+window.addEventListener('focus',()=>{
+  const side=vocabExplanationFirst();
+  if(side!==vocabLastFrontSide){vocabLastFrontSide=side;if(route[0]==='llr'&&route[1]==='vocab'&&route[2]==='learn')render();}
+});
 function vocabFlip(button,i) {
   const back=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(back));
-  button.innerHTML=`<small>${back?'Explicație':'Cuvânt'}</small><strong>${esc(VOCAB[i][back?1:0])}</strong><small>Întoarce ↻</small>`;
+  const firstExplanation=button.dataset?.firstSide?button.dataset.firstSide==='explanation':vocabExplanationFirst();
+  const explanation=back?!firstExplanation:firstExplanation;
+  button.innerHTML=`<small>${explanation?'Explicație':'Cuvânt'}</small><strong>${esc(VOCAB[i][explanation?1:0])}</strong><small>Întoarce ↻</small>`;
 }
 function vocabNextSet() {
   const m=vocabModel();if(!m.verified)return;
@@ -236,8 +248,8 @@ renderVocab = function(level) {
   if(!level)return view(`<div class="hero"><h2>🌱 Vocabular</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p><div class="rule"><b>REȚINE!</b> Cuvintele cu sens asemănător exprimă idei apropiate. Cuvintele cu sens opus exprimă idei contrare.</div></div><div class="cards">${card('📖 Învață – Flashcarduri','Toate cuvintele pe o singură pagină. Cele noi sunt primele.','go("llr","vocab","learn")')}${card('1. Găsește perechea','10 cuvinte în fiecare rundă','go("llr","vocab","match")')}${card('2. Scrie cuvinte cu sens asemănător','Seturi de 10 cuvinte și indicii dacă ai nevoie :)','go("llr","vocab","similar")')}${card('3. Completează propozițiile','O propoziție pe rând. Te oprești când vrei.','go("llr","vocab","gaps")')}${card('⭐ Bonus: Cuvinte cu sens opus','Descoperă contrariile','go("llr","vocab","opposite")')}</div>`);
   if(level==='learn'){
     const ids=VOCAB.map((_,i)=>i).sort((a,b)=>((vocabDates.get(b)||Date.parse(VOCAB[b][4])||0)-(vocabDates.get(a)||Date.parse(VOCAB[a][4])||0)) || (b>=23||a>=23?b-a:a-b));
-    const colors=vocabFlashColors(ids.length);
-    return view(`<div class="hero"><h2>📖 Învață – Flashcarduri</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p></div><div class="vocab-flashcards">${ids.map((i,j)=>`<button type="button" data-color="${colors[j]}" class="vocab-flashcard" aria-pressed="false" onclick="vocabFlip(this,${i})"><small>Cuvânt</small><strong>${esc(VOCAB[i][0])}</strong><small>Întoarce ↻</small></button>`).join('')}</div>`);
+    const colors=vocabFlashColors(ids.length),firstExplanation=vocabExplanationFirst();
+    return view(`<div class="hero"><h2>📖 Învață – Flashcarduri</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p></div><div class="vocab-flashcards">${ids.map((i,j)=>`<button type="button" data-color="${colors[j]}" data-first-side="${firstExplanation?'explanation':'word'}" class="vocab-flashcard" aria-pressed="false" onclick="vocabFlip(this,${i})"><small>${firstExplanation?'Explicație':'Cuvânt'}</small><strong>${esc(VOCAB[i][firstExplanation?1:0])}</strong><small>Întoarce ↻</small></button>`).join('')}</div>`);
   }
   if(level==='gaps')return vocabRenderGaps();
   if(level==='opposite')return vocabRenderOpposite();
