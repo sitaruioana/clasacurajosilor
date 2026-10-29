@@ -96,26 +96,7 @@ function unknownProblems(type,level){
   return {question,answer,expression,tip1,tip2,kind};
  });
 }
-function unknownOptions(answer,i){
- // Patru variante, cu răspunsul corect distribuit între toate pozițiile.
- const offsets=[100,-100,1000,-1000,200,-200,500,-500,300,-300,700,-700];
- const choices=[];
- for(const offset of offsets){
-  const n=answer+offset;
-  if(n>=1000&&n<=9999&&n!==answer&&!choices.includes(n))choices.push(n);
-  if(choices.length===3)break;
- }
- // Plasă de siguranță pentru a păstra trei distractori diferiți și în cazuri-limită.
- for(let d=1;choices.length<3;d++){
-  const n=answer+d;
-  if(n<=9999&&n!==answer&&!choices.includes(n))choices.push(n);
-  const m=answer-d;
-  if(choices.length<3&&m>=1000&&m!==answer&&!choices.includes(m))choices.push(m);
- }
- const correctPosition=i%4;
- choices.splice(correctPosition,0,answer);
- return choices;
-}
+function unknownOptions(answer,i){let arr=[answer,answer+(i%2?100:1000),answer-(i%2?1000:100)];arr=arr.map((n,j)=>n<1000?answer+500+j*100:n>9999?answer-500-j*100:n);return [arr[1],arr[0],arr[2]];}
 function unknownCompleted(){return Array.from({length:10},(_,i)=>!!state['correct'+i]).filter(Boolean).length}
 function unknownVerify(){
  const ps=unknownProblems(route[2],route[3]);let good=0;
