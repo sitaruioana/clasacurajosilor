@@ -47,12 +47,13 @@ function vocabRepeatRound(){
 }
 // Consistent presentation for activity cards throughout the shared site.
 function activityCardTitle(title){
+  if(route[0]==='math'||(route[0]==='science'&&route[1]==='experiments'))return String(title).trim();
   const text=String(title).replace(/^\d+\.\s*/, '').trim();
   if(/^\p{Extended_Pictographic}/u.test(text))return text;
   const icon=/^Alege/.test(text)?'🎯':/^Completează/.test(text)?'🧩':/^Transformă/.test(text)?'🔄':/^Detectiv/.test(text)?'🔎':/^Calculează/.test(text)?'🧮':/^Așază/.test(text)?'✏️':/^Rezolvă/.test(text)?'💡':/^Află/.test(text)?'🔎':route[0]==='science'?'🔬':route[0]==='math'?'🧮':route[1]==='punct'?'📄':'✍️';
   return icon+' '+text;
 }
-card=function(title,desc,action){return `<button class="card" onclick="${esc(action)}"><strong>${esc(activityCardTitle(title))}</strong><small>${esc(String(desc).trim().replace(/\.$/,''))}</small></button>`;};
+card=function(title,desc,action){if(title==='🔬 ȘTIINȚE ALE NATURII')desc='Lecții și experimente';return `<button class="card" onclick="${esc(action)}"><strong>${esc(activityCardTitle(title))}</strong><small>${esc(String(desc).trim().replace(/\.$/,''))}</small></button>`;};
 const vocabOriginalView=view;
 view=function(html){return vocabOriginalView(route[0]==='llr'&&route[1]==='vocab'?vocabProgressWidget()+vocabQuickNav()+html:html);};
 const vocabOriginalVerify=vocabVerify;
@@ -279,3 +280,9 @@ renderVocab = function(level) {
 };
 // The new route is registered before resolving a direct flashcard link.
 route=routeFromPath();state=loadProgress();render();
+
+// Load the science extension on every existing entry page of the shared site.
+const scienceDataScript=document.createElement('script');
+scienceDataScript.src=SITE_ROOT+'assets/science-data.js?v=20261030-science1';
+scienceDataScript.onload=()=>{const extension=document.createElement('script');extension.src=SITE_ROOT+'assets/science-lessons.js?v=20261030-science1';document.body.appendChild(extension);};
+document.body.appendChild(scienceDataScript);
