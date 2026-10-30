@@ -61,7 +61,7 @@ function activityCardTitle(title){
   const icon=/^Alege/.test(text)?'🎯':/^Completează/.test(text)?'🧩':/^Transformă/.test(text)?'🔄':/^Detectiv/.test(text)?'🔎':/^Calculează/.test(text)?'🧮':/^Așază/.test(text)?'✏️':/^Rezolvă/.test(text)?'💡':/^Află/.test(text)?'🔎':route[0]==='science'?'🔬':route[0]==='math'?'🧮':route[1]==='punct'?'📄':'✍️';
   return icon+' '+text;
 }
-card=function(title,desc,action){if(title==='🔬 ȘTIINȚE ALE NATURII')desc='Lecții și experimente';return `<button class="card" onclick="${esc(action)}"><strong>${esc(activityCardTitle(title))}</strong><small>${esc(String(desc).trim().replace(/\.$/,''))}</small></button>`;};
+card=function(title,desc,action){if(title==='✍️ Ortograme')return `<button class="card" onclick="${esc(action)}"><strong>${esc(activityCardTitle(title))}</strong></button>`;if(title==='🔬 ȘTIINȚE ALE NATURII')desc='Lecții și experimente';return `<button class="card" onclick="${esc(action)}"><strong>${esc(activityCardTitle(title))}</strong><small>${esc(String(desc).trim().replace(/\.$/,''))}</small></button>`;};
 const vocabOriginalView=view;
 view=function(html){return vocabOriginalView(route[0]==='llr'&&route[1]==='vocab'?vocabProgressWidget()+vocabQuickNav()+html:html);};
 const vocabOriginalVerify=vocabVerify;
