@@ -47,7 +47,15 @@ function vocabRepeatRound(){
 }
 // Consistent presentation for activity cards throughout the shared site.
 function activityCardTitle(title){
-  if(route[0]==='math'||(route[0]==='science'&&route[1]==='experiments'))return String(title).trim();
+  if(route[0]==='math'&&route[1]==='unknown'){
+    const items=Object.values(route[2]?UNKNOWN_LEVELS:UNKNOWN_TYPES),index=items.findIndex(v=>v[0]===String(title));
+    if(index>=0)return (index+1)+'. '+String(title).replace(/^\p{Extended_Pictographic}\s*/u,'');
+  }
+  if(route[0]==='llr'&&route[1]==='ortho'){
+    if(/^\d+\./.test(String(title)))return String(title);
+    const index=Object.values(orthoNames).indexOf(String(title));if(index>=0)return (index+1)+'. '+title;
+  }
+  if((route[0]==='science'&&route[1]==='lessons'&&!route[2])||route[0]==='math'||(route[0]==='science'&&route[1]==='experiments'))return String(title).trim();
   const text=String(title).replace(/^\d+\.\s*/, '').trim();
   if(/^\p{Extended_Pictographic}/u.test(text))return text;
   const icon=/^Alege/.test(text)?'🎯':/^Completează/.test(text)?'🧩':/^Transformă/.test(text)?'🔄':/^Detectiv/.test(text)?'🔎':/^Calculează/.test(text)?'🧮':/^Așază/.test(text)?'✏️':/^Rezolvă/.test(text)?'💡':/^Află/.test(text)?'🔎':route[0]==='science'?'🔬':route[0]==='math'?'🧮':route[1]==='punct'?'📄':'✍️';
@@ -281,8 +289,11 @@ renderVocab = function(level) {
 // The new route is registered before resolving a direct flashcard link.
 route=routeFromPath();state=loadProgress();render();
 
-// Load the science extension on every existing entry page of the shared site.
-const scienceDataScript=document.createElement('script');
-scienceDataScript.src=SITE_ROOT+'assets/science-data.js?v=20261030-science1';
-scienceDataScript.onload=()=>{const extension=document.createElement('script');extension.src=SITE_ROOT+'assets/science-lessons.js?v=20261030-science1';document.body.appendChild(extension);};
-document.body.appendChild(scienceDataScript);
+// Install subject extensions before attaching the shared reward system.
+function curajosLoadScript(name){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=SITE_ROOT+'assets/'+name+'.js?v=20261030-science2';s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});}
+Promise.all([
+ curajosLoadScript('science-data').then(()=>curajosLoadScript('science-lessons')),
+ curajosLoadScript('math-order'),
+ curajosLoadScript('math-unknown'),
+ curajosLoadScript('orthograms')
+]).then(()=>curajosLoadScript('rewards')).catch(()=>{const el=document.createElement('p');el.className='result';el.textContent='Pagina nu s-a încărcat complet. Reîncarcă și continuă!';document.getElementById('app').prepend(el);});
