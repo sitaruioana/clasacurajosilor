@@ -50,11 +50,11 @@ const MATH_EVAL={
   ['8100 − c + 1800 = 4900. Află c.',5000]
  ].map(([q,a])=>({q,a})),
  probleme:[
+  ['În trei zile, copiii au adunat 3000 de alune. În prima zi au adunat 1200, iar în a doua zi cu 200 mai puține decât în prima. Câte alune au adunat în a treia zi?',800,[3000,1200,1000,800]],
+  ['Într-o livadă s-au cules 4500 de kilograme de fructe: 1500 de kilograme de mere, pere cu 300 de kilograme mai puține decât mere și prune. Câte kilograme de prune s-au cules?',1800,[1200,1800,4500,1500]],
   ['Copiii au strâns 1218 frunze galbene, iar frunze roșii cu 399 mai puține. Frunze ruginii au strâns cât cele galbene și roșii la un loc. Câte frunze au strâns în total?',4074,[1218,4074,819,2037]],
   ['Într-o zi, copiii au adunat 1350 de castane, a doua zi cu 250 mai multe, iar a treia zi cât în primele două zile la un loc. Câte castane au adunat în total?',5900,[5900,1350,2950,1600]],
-  ['O grădină a dat 1420 de kilograme de morcovi, cu 320 de kilograme mai puțini cartofi, iar dovleci cât morcovii și cartofii la un loc. Câte kilograme de legume s-au adunat în total?',5040,[1100,2520,5040,1420]],
-  ['În trei zile, copiii au adunat 3000 de alune. În prima zi au adunat 1200, iar în a doua zi cu 200 mai puține decât în prima. Câte alune au adunat în a treia zi?',800,[3000,1200,1000,800]],
-  ['Într-o livadă s-au cules 4500 de kilograme de fructe: 1500 de kilograme de mere, pere cu 300 de kilograme mai puține decât mere și prune. Câte kilograme de prune s-au cules?',1800,[1200,1800,4500,1500]]
+  ['O grădină a dat 1420 de kilograme de morcovi, cu 320 de kilograme mai puțini cartofi, iar dovleci cât morcovii și cartofii la un loc. Câte kilograme de legume s-au adunat în total?',5040,[1100,2520,5040,1420]]
  ].map(([q,a,options])=>({q,a,options}))
 };
 FRIENDLY_ROUTES['matematica/bonus-evaluare']=['math','evaluation'];
