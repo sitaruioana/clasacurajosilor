@@ -13,11 +13,11 @@ const MULT_ROOT='matematica/inmultirea';
 FRIENDLY_ROUTES[MULT_ROOT]=['math','multiply'];
 for(const level of Object.keys(MULT_LEVELS)){
  FRIENDLY_ROUTES[MULT_ROOT+'/'+level]=['math','multiply',level];
- for(const game of Object.keys(MULT_GAMES).filter(g=>g!=='istetei'||level==='tabla'))FRIENDLY_ROUTES[MULT_ROOT+'/'+level+'/'+game]=['math','multiply',level,game];
+ for(const game of Object.keys(MULT_GAMES))FRIENDLY_ROUTES[MULT_ROOT+'/'+level+'/'+game]=['math','multiply',level,game];
 }
 rewardChapter('math-multiplication','math','Înmulțirea',Object.entries(MULT_LEVELS).flatMap(([level,[title]])=>Object.entries(MULT_GAMES).filter(([game])=>game!=='istetei').map(([game,[name]])=>[title+' · '+name,['math','multiply',level,game]])),true);
 REWARD_CHAPTERS.unshift(REWARD_CHAPTERS.pop());
-rewardChapter('math-mind','math','Exerciții pentru isteței',[['Tabla înmulțirii · Exerciții pentru isteței',['math','multiply','tabla','istetei']]]);
+rewardChapter('math-mind','math','Exerciții pentru isteței',Object.entries(MULT_LEVELS).map(([level,[title]])=>[title+' · Exerciții pentru isteței',['math','multiply',level,'istetei']]));
 REWARD_CHAPTERS.unshift(REWARD_CHAPTERS.pop());
 const multCrumbs=crumbs;crumbs=function(){let s=multCrumbs().replace('>multiply</button>','>Înmulțirea</button>');for(const [k,v] of Object.entries(MULT_LEVELS))s=s.replace('>'+k+'</button>','>'+v[0]+'</button>');for(const [k,v] of Object.entries(MULT_GAMES))s=s.replace('>'+k+'</button>','>'+v[0]+'</button>');return s;};
 const multOldLoad=loadProgress;loadProgress=function(){return route[0]==='math'&&route[1]==='multiply'&&route[3]?{}:multOldLoad();};
@@ -50,9 +50,51 @@ function multSituation(a,b,level,kind){
  ][multRand(0,2)];
 }
 function multUnit(question){if(question.includes('Cât costă')||question.includes('Câți lei'))return 'lei';for(const name of ['creioane','felii','pagini','vizitatori','caiete'])if(question.includes('Câte '+name)||question.includes('Câți '+name))return name;return '';}
+const MULT_MIND_PAIRS={
+ zu_u:[[15,6],[15,2],[15,4],[15,8],[15,9],[75,2],[75,4],[75,6],[75,8],[75,9]],
+ szu_u:[[250,9],[125,8],[250,4],[150,6],[200,4],[300,3],[200,9],[300,9],[400,9],[500,9]],
+ mszu_u:[[1250,4],[1000,2],[1500,2],[2000,4],[2500,4],[1000,5],[2000,3],[1500,4],[3000,2],[1250,8]],
+ zu_zu:[[32,11],[12,11],[15,11],[20,11],[21,11],[22,11],[24,11],[36,11],[44,11],[48,25]],
+ szu_zu:[[116,25],[100,11],[101,11],[110,11],[120,11],[125,11],[200,11],[104,11],[120,25],[124,25]]
+};
+function multMindStrategy(a,b){
+ if(b===9)return `Înmulțește ${a} cu 10, apoi scade o dată ${a}.`;
+ if(b===6)return `Calculează ${a} × 2, apoi triplează rezultatul.`;
+ if(b===2)return `Dublează numărul ${a}.`;
+ if(b===3)return `Dublează numărul ${a}, apoi mai adaugă o dată ${a}.`;
+ if(b===4)return `Dublează numărul ${a}, apoi dublează încă o dată.`;
+ if(b===5)return `Înmulțește ${a} cu 10, apoi înjumătățește rezultatul.`;
+ if(b===8)return `Dublează numărul ${a} de trei ori.`;
+ if(b===11)return `Înmulțește ${a} cu 10, apoi adaugă o dată ${a}.`;
+ if(b===25)return `Împarte ${a} la 4, apoi înmulțește rezultatul cu 100.`;
+ return 'Urmează pașii pe rând.';
+}
+function multMindTableHint(question){
+ const tips=[];
+ if(/tripleaz/i.test(question))tips.push('Triplează: adună numărul de trei ori sau dublează-l și mai adaugă-l o dată.');
+ if(/dubleaz/i.test(question))tips.push('Dublează: adună numărul cu el însuși.');
+ if(/înjumătăț/i.test(question))tips.push('Înjumătățește: împarte numărul în două părți egale.');
+ if(/rotunjește/i.test(question))tips.push('La rotunjirea la zeci, privește cifra unităților: de la 5 în sus alegi zecea următoare.');
+ if(/de zece ori|de 10 ori/i.test(question))tips.push('Pentru înmulțirea cu 10, adaugă un zero la dreapta numărului.');
+ return tips.length?tips.join(' '):'Parcurge pașii în ordine și păstrează în minte rezultatul fiecărui pas.';
+}
+function multMindBank(level){
+ if(level==='tabla')return MULT_MIND.map(([question,answer])=>({question,answer,hint:multMindTableHint(question)}));
+ return (MULT_MIND_PAIRS[level]||[]).flatMap(([a,b])=>{
+  const product=a*b,prefix=`Începe cu numărul ${a}. Înmulțește-l cu ${b}. `,hint=multMindStrategy(a,b);
+  return [
+   {question:prefix+'Ce rezultat ai obținut?',answer:product,hint},
+   {question:prefix+'Adaugă numărul de laturi ale unui triunghi. Ce rezultat ai obținut?',answer:product+3,hint},
+   {question:prefix+'Adaugă numărul de zile dintr-o săptămână. Ce rezultat ai obținut?',answer:product+7,hint},
+   {question:prefix+'Adaugă numărul de laturi ale unui pătrat. Ce rezultat ai obținut?',answer:product+4,hint},
+   {question:prefix+'Care este prima cifră a rezultatului?',answer:Number(String(product)[0]),hint},
+   {question:prefix+'Care este ultima cifră a rezultatului?',answer:product%10,hint}
+  ];
+ });
+}
 function multAmount(game){return game==='spion'?6:12;}
 function multBuild(level,game,previous=[]){
- if(level==='tabla'&&game==='istetei'){const used=new Set(previous),available=MULT_MIND.map((_,i)=>i).filter(i=>!used.has('mind-'+i));if(available.length<12)return multBuild(level,game,[]);const picks=vocabShuffle(available).slice(0,12),round=picks.map(i=>({key:'mind-'+i,question:MULT_MIND[i][0],answer:MULT_MIND[i][1],shown:MULT_MIND[i][1],wrong:false}));for(const t of round)used.add(t.key);return {round,seen:[...used]};}
+ if(game==='istetei'){const bank=multMindBank(level),used=new Set(previous),available=bank.map((_,i)=>i).filter(i=>!used.has('mind-'+i));if(available.length<12)return multBuild(level,game,[]);const picks=vocabShuffle(available);if(previous.length===0&&level!=='tabla'){const preferred=level==='szu_u'?2:0;const pos=picks.indexOf(preferred);if(pos>=0)picks.unshift(...picks.splice(pos,1));}const round=picks.slice(0,12).map(i=>({key:'mind-'+i,question:bank[i].question,answer:bank[i].answer,hint:bank[i].hint,shown:bank[i].answer,wrong:false}));for(const t of round)used.add(t.key);return {round,seen:[...used]};}
  const n=multAmount(game),used=new Set(previous),round=[];let tries=0;
  if(level==='tabla'&&game==='situatii')for(const [a,b] of [[3,9],[5,6]]){const key=a+'x'+b;if(!used.has(key)){used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level),shown:a*b,wrong:false});}}
  if(game==='situatii'&&['zu_u','zu_zu','szu_u','szu_zu'].includes(level)){
@@ -79,10 +121,10 @@ function multSetup(){if(!state.__multRound){const made=multBuild(route[2],route[
 function multSet(i,key,value){state['mult-'+i+'-'+key]=value;const task=document.getElementById('mult-task-'+i);if(task){task.classList.remove('good','bad');task.querySelector('.mult-feedback').textContent='';}const score=document.getElementById('mult-score');if(score)score.replaceChildren();}
 function multRender(level,game){
  if(!MULT_LEVELS[level])return view(`<div class="hero"><h2>✖️ Înmulțirea</h2><p>Alege de unde vrei să începi!</p></div><div class="cards">${Object.entries(MULT_LEVELS).map(([id,[title,description]],i)=>card((i+1)+'. '+title,description,`go('math','multiply','${id}')`)).join('')}</div>`);
- if(!MULT_GAMES[game]||(game==='istetei'&&level!=='tabla'))return view(`<div class="hero"><h2>✖️ ${esc(MULT_LEVELS[level][0])}</h2><p>Alege un joc!</p></div><div class="cards">${Object.entries(MULT_GAMES).filter(([id])=>id!=='istetei'||level==='tabla').map(([id,[title,description]],i)=>card((i+1)+'. '+title,description,`go('math','multiply','${level}','${id}')`,id==='istetei'?'2026-11-15T00:00:00+02:00':undefined)).join('')}</div>`);
+ if(!MULT_GAMES[game])return view(`<div class="hero"><h2>✖️ ${esc(MULT_LEVELS[level][0])}</h2><p>Alege un joc!</p></div><div class="cards">${Object.entries(MULT_GAMES).map(([id,[title,description]],i)=>card((i+1)+'. '+title,description,`go('math','multiply','${level}','${id}')`,id==='istetei'?'2026-11-15T00:00:00+02:00':undefined)).join('')}</div>`);
  const n=multAmount(game),round=multSetup(),done=multCompleted(),shownRound=state.__multFinished?Math.max(1,done):Math.min(5,done+1);
  const instruction=game==='istetei'?'Calculează mintal, urmând pașii, și scrie răspunsul.':game==='spion'?'În fiecare serie sunt două calcule greșite. Alege „Corect” sau „Greșit”; pentru cele greșite, scrie rezultatul corect.':game==='situatii'?'Citește fiecare problemă și scrie răspunsul.':'Calculează și scrie rezultatul.';
- const rows=round.map((t,i)=>{let answer=esc(String(state['mult-'+i+'-answer']??''));let q=game==='istetei'?esc(t.question).replace(/([.!?])\s+/g,'$1<br>'):game==='situatii'?esc(t.question):`${t.a} × ${t.b} = ${game==='spion'?t.shown:'?'}`;let control=game==='spion'?`<div class="options"><label class="option"><input type="radio" name="mult-${i}" ${state['mult-'+i+'-choice']==='correct'?'checked':''} onchange="multSet(${i},'choice','correct')"> Corect</label><label class="option"><input type="radio" name="mult-${i}" ${state['mult-'+i+'-choice']==='wrong'?'checked':''} onchange="multSet(${i},'choice','wrong')"> Greșit</label></div><label>Rezultatul corect, dacă este greșit: <input class="entry" inputmode="numeric" type="text" autocomplete="off" aria-label="Rezultatul corect la exercițiul ${i+1}" value="${answer}" oninput="multSet(${i},'answer',this.value)"></label>`:`<label>Răspuns: <input class="entry" inputmode="numeric" type="text" autocomplete="off" aria-label="Răspunsul exercițiului ${i+1}" value="${answer}" oninput="multSet(${i},'answer',this.value)">${game==='situatii'?' '+esc(multUnit(t.question)):''}</label>`;return `<div class="task" id="mult-task-${i}"><p><b>${i+1}.</b> ${q}</p>${control}<div class="mult-feedback" aria-live="polite"></div></div>`;}).join('');
+ const rows=round.map((t,i)=>{let answer=esc(String(state['mult-'+i+'-answer']??''));let q=game==='istetei'?esc(t.question).replace(/([.!?])\s+/g,'$1<br>'):game==='situatii'?esc(t.question):`${t.a} × ${t.b} = ${game==='spion'?t.shown:'?'}`;let control=game==='spion'?`<div class="options"><label class="option"><input type="radio" name="mult-${i}" ${state['mult-'+i+'-choice']==='correct'?'checked':''} onchange="multSet(${i},'choice','correct')"> Corect</label><label class="option"><input type="radio" name="mult-${i}" ${state['mult-'+i+'-choice']==='wrong'?'checked':''} onchange="multSet(${i},'choice','wrong')"> Greșit</label></div><label>Rezultatul corect, dacă este greșit: <input class="entry" inputmode="numeric" type="text" autocomplete="off" aria-label="Rezultatul corect la exercițiul ${i+1}" value="${answer}" oninput="multSet(${i},'answer',this.value)"></label>`:`<label>Răspuns: <input class="entry" inputmode="numeric" type="text" autocomplete="off" aria-label="Răspunsul exercițiului ${i+1}" value="${answer}" oninput="multSet(${i},'answer',this.value)">${game==='situatii'?' '+esc(multUnit(t.question)):''}</label>`;return `<div class="task" id="mult-task-${i}"><p><b>${i+1}.</b> ${q}</p>${control}${game==='istetei'?`<details><summary>💡 Indiciu</summary><p class="hint">${esc(t.hint)}</p></details>`:''}<div class="mult-feedback" aria-live="polite"></div></div>`;}).join('');
  view(`<div class="hero"><div class="section-label">${esc(MULT_LEVELS[level][0])}</div><h2>${esc(MULT_GAMES[game][0])}</h2><p>${instruction}</p><p id="mult-progress">${done>=5?'🌟 Joc încheiat! Poți continua să exersezi.':`Seria ${shownRound} din 5 · ${done} din 5 serii încheiate`}</p></div><div class="panel">${rows}<div class="row"><button class="btn" onclick="multVerify()">✓ Verifică</button><button class="btn alt" id="mult-next" onclick="multNext()" ${state.__multFinished?'':'disabled'}>Încă ${n} ${game==='calcule'?'calcule':'exerciții'} →</button></div><div id="mult-score" aria-live="polite"></div></div>`);
 }
 function multVerify(){
