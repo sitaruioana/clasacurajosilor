@@ -50,18 +50,18 @@ function multSituation(a,b,level,kind){
   `O pungă de pufuleți costă ${a} lei. Cât costă ${b} pungi la fel?`
  ][multRand(0,8)];
  return [
-  `O tipografie imprimă ${multQuantity(a,'pagini')} pe zi. Câte pagini imprimă în ${multQuantity(b,'zile')}, în același ritm?`,
+  level.startsWith('zu_')?`O imprimantă imprimă ${multQuantity(a,'pagini')} pe zi. Câte pagini imprimă în ${multQuantity(b,'zile')}, în același ritm?`:level.startsWith('szu_')?`Un centru de copiere (xerox) imprimă ${multQuantity(a,'pagini')} pe zi. Câte pagini imprimă în ${multQuantity(b,'zile')}, în același ritm?`:`O tipografie imprimă ${multQuantity(a,'pagini')} pe zi. Câte pagini imprimă în ${multQuantity(b,'zile')}, în același ritm?`,
   `Un muzeu primește ${multQuantity(a,'vizitatori')} pe zi. Câți vizitatori primește în ${multQuantity(b,'zile')}, dacă numărul este același în fiecare zi?`,
-  `O fabrică pregătește ${multQuantity(a,'caiete')} pe zi. Câte caiete pregătește în ${multQuantity(b,'zile')}, în același ritm?`
+  level.startsWith('zu_')?`Într-o librărie se vând ${multQuantity(a,'caiete')} pe zi. Câte caiete se vând în ${multQuantity(b,'zile')}, în același ritm?`:level.startsWith('szu_')?`Un supermarket vinde ${multQuantity(a,'caiete')} pe zi. Câte caiete vinde în ${multQuantity(b,'zile')}, în același ritm?`:`O fabrică produce ${multQuantity(a,'caiete')} pe zi. Câte caiete produce în ${multQuantity(b,'zile')}, în același ritm?`
  ][multRand(0,2)];
 }
 function multStoryIcons(task){
  const q=task.question;let icon='';
- if(q.includes('STB'))icon='🚌';else if(q.includes('metrou'))icon='🚇';else if(q.includes('teatru'))icon='🎭';else if(q.includes('concert'))icon='🎵';else if(q.includes('acadea'))icon='🍭';else if(q.includes('ciocolată'))icon='🍫';else if(q.includes('salam de biscuiți')||q.includes('napolitane'))icon='🍪';else if(q.includes('croissant'))icon='🥐';else if(q.includes('pufuleți'))icon='🍿';else if(q.includes('felii de măr'))icon='🍎';else if(q.includes('creioane'))icon='✏️';else if(q.includes('carte')||q.includes('cărți'))icon='📚';else if(q.includes('pagini'))icon='📖';else if(q.includes('muzeu'))icon='🏛️';else if(q.includes('caiete'))icon='📒';
+ if(q.includes('STB'))icon='🚌';else if(q.includes('metrou'))icon='🚇';else if(q.includes('teatru'))icon='🎭';else if(q.includes('concert'))icon='🎵';else if(q.includes('acadea'))icon='🍭';else if(q.includes('ciocolată'))icon='🍫';else if(q.includes('salam de biscuiți')||q.includes('napolitane'))icon='🍪';else if(q.includes('croissant'))icon='🥐';else if(q.includes('pufuleți'))icon='🍿';else if(q.includes('felii de măr'))icon='🍎';else if(q.includes('creioane'))icon='✏️';else if(q.includes('carte')||q.includes('cărți'))icon='📚';else if(q.includes('imprimantă')||q.includes('copiere')||q.includes('tipografie'))icon='🖨️';else if(q.includes('pagini'))icon='📖';else if(q.includes('fișe'))icon='📄';else if(q.includes('muzeu'))icon='🏛️';else if(q.includes('caiete'))icon='📒';
  const money=multUnit(q)==='lei'?((task.a+task.b)%2?'💰':'💸'):'';
  return [icon,money].filter(Boolean).join(' ');
 }
-function multUnit(question){if(question.includes('Cât costă')||question.includes('Câți lei'))return 'lei';for(const name of ['creioane','felii','pagini','vizitatori','caiete','napolitane'])if(question.includes('Câte '+name)||question.includes('Câți '+name))return name;return '';}
+function multUnit(question){if(question.includes('Cât costă')||question.includes('Câți lei'))return 'lei';for(const name of ['creioane','felii','pagini','vizitatori','caiete','napolitane','fișe'])if(question.includes('Câte '+name)||question.includes('Câți '+name))return name;return '';}
 const MULT_MIND_PAIRS={
  zu_u:[[15,6],[15,2],[15,4],[15,8],[15,9],[75,2],[75,4],[75,6],[75,8],[75,9]],
  szu_u:[[250,9],[125,8],[250,4],[150,6],[200,4],[300,3],[200,9],[300,9],[400,9],[500,9]],
