@@ -59,14 +59,16 @@ const MATH_EVAL={
 };
 FRIENDLY_ROUTES['matematica/bonus-evaluare']=['math','evaluation'];
 for(const key of Object.keys(MATH_EVAL_TYPES))FRIENDLY_ROUTES['matematica/bonus-evaluare/'+key]=['math','evaluation',key];
-rewardChapter('math-evaluation','math','Bonus: antrenament pentru evaluare',Object.entries(MATH_EVAL_TYPES).map(([key,title])=>[title,['math','evaluation',key]]),true);
-const mathEvalOldCrumbs=crumbs;crumbs=function(){let html=mathEvalOldCrumbs().replace('>evaluation</button>','>Bonus evaluare</button>');for(const [key,title] of Object.entries(MATH_EVAL_TYPES))html=html.replace('>'+key+'</button>','>'+title+'</button>');return html;};
+const mathEvalRenameAt=Date.parse('2026-11-16T12:00:00+02:00');
+function mathEvalTitle(){return Date.now()>=mathEvalRenameAt?'Bonus: învățare remedială':'Bonus: antrenament pentru evaluare';}
+rewardChapter('math-evaluation','math',mathEvalTitle(),Object.entries(MATH_EVAL_TYPES).map(([key,title])=>[title,['math','evaluation',key]]),true);
+const mathEvalOldCrumbs=crumbs;crumbs=function(){let html=mathEvalOldCrumbs().replace('>evaluation</button>','>'+mathEvalTitle()+'</button>');for(const [key,title] of Object.entries(MATH_EVAL_TYPES))html=html.replace('>'+key+'</button>','>'+title+'</button>');return html;};
 const mathEvalOldLoad=loadProgress;loadProgress=function(){return route[0]==='math'&&route[1]==='evaluation'&&route[2]?{}:mathEvalOldLoad();};
-const mathEvalOldView=view;view=function(html){const menu=route[0]==='math'&&!route[1];if(menu)html=html.replace('<div class="cards">','<div class="cards">'+card('⭐ Bonus: antrenament pentru evaluare','Jocuri cu adunări, scăderi și probleme',"go('math','evaluation')",'2026-11-12T00:00:00+02:00'));const result=mathEvalOldView(html);if(menu){const grid=document.querySelector('#app .cards');const detective=grid&&[...grid.querySelectorAll('.card')].find(el=>el.textContent.includes('Detectivii numerelor'));if(detective)grid.appendChild(detective);}return result;};
+const mathEvalOldView=view;view=function(html){const menu=route[0]==='math'&&!route[1];if(menu)html=html.replace('<div class="cards">','<div class="cards">'+card('⭐ '+mathEvalTitle(),'Jocuri cu adunări, scăderi și probleme',"go('math','evaluation')",'2026-11-12T00:00:00+02:00'));const result=mathEvalOldView(html);if(menu){const grid=document.querySelector('#app .cards');const detective=grid&&[...grid.querySelectorAll('.card')].find(el=>el.textContent.includes('Detectivii numerelor'));if(detective)grid.appendChild(detective);}return result;};
 function mathEvalSet(i,value){state['me-'+i]=value;document.getElementById('me-score')?.replaceChildren();}
 function mathEvalNormal(value){return String(value).replace(/[\s\u00a0\u202f]/g,'').replace(/[−–—]/g,'-').toLowerCase();}
 function mathEvalRender(kind){
- if(!MATH_EVAL[kind])return view(`<div class="hero"><h2>⭐ Bonus: antrenament pentru evaluare</h2><p>Alege un joc și exersează în ritmul tău!</p></div><div class="cards">${Object.entries(MATH_EVAL_TYPES).map(([key,title],i)=>card((i+1)+'. '+title,MATH_EVAL[key].length+' exerciții',`go('math','evaluation','${key}')`)).join('')}</div>`);
+ if(!MATH_EVAL[kind])return view(`<div class="hero"><h2>⭐ ${mathEvalTitle()}</h2><p>Alege un joc și exersează în ritmul tău!</p></div><div class="cards">${Object.entries(MATH_EVAL_TYPES).map(([key,title],i)=>card((i+1)+'. '+title,MATH_EVAL[key].length+' exerciții',`go('math','evaluation','${key}')`)).join('')}</div>`);
  const rows=MATH_EVAL[kind];
  const rule=kind==='necunoscute'?`<div class="rule"><b>REȚINE!</b><ol><li>Mărești necunoscuta.</li><li>Ce rol are „marea necunoscută”?</li><li>Cum o aflăm?</li><li>Copiem „marea necunoscută”!</li><li>O aflăm!</li><li>Am rămas cu o necunoscută mică, așa și-așa! 🎶</li><li>Rezolv exercițiul clasic!</li></ol><h3>📝 Model</h3><div style="line-height:1.9"><span style="display:inline-flex;vertical-align:bottom;flex-direction:column;align-items:center;line-height:1.3"><small style="font-weight:700;color:#8b3a45">descăzut</small><span style="border:2px solid #bd5871;border-radius:6px;padding:2px 6px">a + 2520</span></span> − 1610 = 4337<br>a + 2520 = 1610 + 4337<br>a + 2520 = 5947<br>a = 5947 − 2520<br><b>a = 3427</b></div></div>`:'';
  const intro=kind==='afla'?'Scrie exercițiul și rezultatul, de exemplu: 8000 − 3000 = 5000.':kind==='ordine'?'Respectă ordinea operațiilor, apoi scrie rezultatul.':kind==='necunoscute'?'Rezolvă după model, apoi scrie valoarea necunoscutei.':kind==='probleme'?'Citește problema și alege răspunsul potrivit.':kind==='ascunse'?'Alege numărul care se ascunde.':'Calculează și scrie răspunsul.';
@@ -76,4 +78,13 @@ function mathEvalRender(kind){
 function mathEvalVerify(){let rows=MATH_EVAL[route[2]],ids=[];rows.forEach((t,i)=>{let answer=mathEvalNormal(state['me-'+i]||''),correct=String(t.a).split('|').some(a=>mathEvalNormal(a)===answer),el=document.getElementById('me-task-'+i);el.classList.toggle('good',correct);el.classList.toggle('bad',!correct);el.querySelector('.me-feedback').textContent=correct?'✓ Corect!':'Mai încearcă! 💡';if(correct)ids.push(String(i));});document.getElementById('me-score').innerHTML=`<div class="result">${ids.length} din ${rows.length} exerciții corecte. ${ids.length===rows.length?'Bravo! 🌟':'Poți corecta și verifica din nou.'}</div>`;rewardAfter(ids,rows.length,'#me-score','math');}
 function mathEvalRepeat(){state={};mathEvalRender(route[2]);window.scrollTo(0,0);}
 const mathEvalOldRender=render;render=function(){if(route[0]==='math'&&route[1]==='evaluation')return mathEvalRender(route[2]);return mathEvalOldRender();};
+
+function mathEvalSyncTitle(){
+ const chapter=REWARD_CHAPTERS.find(c=>c.id==='math-evaluation'),title=mathEvalTitle();
+ if(!chapter||chapter.title===title)return;
+ chapter.title=title;
+ if((route[0]==='math'&&(!route[1]||(route[1]==='evaluation'&&!route[2])))||route[0]==='passport')render();
+}
+if(Date.now()<mathEvalRenameAt)setTimeout(mathEvalSyncTitle,Math.min(2147483647,math.max(1,mathEvalRenameAt-Date.now())));
+window.addEventListener('focus',mathEvalSyncTitle);
 const mathEvalResolved=routeFromPath();if(JSON.stringify(mathEvalResolved)!==JSON.stringify(route)){route=mathEvalResolved;state=loadProgress();}render();
