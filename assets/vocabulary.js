@@ -292,11 +292,11 @@ renderVocab = function(level) {
 route=routeFromPath();state=loadProgress();render();
 
 // Install subject extensions before attaching the shared reward system.
-function curajosLoadScript(name){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=SITE_ROOT+'assets/'+name+'.js?v='+(name==='science-lessons'?'20261112-ordine':name==='math-evaluation'?'20261116-bonus-remedial':name==='orthograms'?'20261110-cei':name==='ortho-bonus'?'20261112-remediala':'20261105-calm');s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});}
+function curajosLoadScript(name){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=SITE_ROOT+'assets/'+name+'.js?v='+(name==='science-lessons'?'20261112-ordine':name==='multiplication'?'20261115-inmultirea':name==='math-evaluation'?'20261116-bonus-remedial':name==='orthograms'?'20261110-cei':name==='ortho-bonus'?'20261112-remediala':'20261105-calm');s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});}
 Promise.all([
  curajosLoadScript('science-data').then(()=>curajosLoadScript('science-lessons')),
  curajosLoadScript('math-order'),
  curajosLoadScript('math-unknown'),
  curajosLoadScript('orthograms')
-]).then(()=>curajosLoadScript('rewards')).then(()=>curajosLoadScript('new-subjects')).then(()=>curajosLoadScript('ortho-bonus')).then(()=>curajosLoadScript('math-evaluation')).catch(()=>{const el=document.createElement('p');el.className='result';el.textContent='Pagina nu s-a încărcat complet. Reîncarcă și continuă!';document.getElementById('app').prepend(el);});
+]).then(()=>curajosLoadScript('rewards')).then(()=>curajosLoadScript('new-subjects')).then(()=>curajosLoadScript('ortho-bonus')).then(()=>curajosLoadScript('math-evaluation')).then(()=>curajosLoadScript('multiplication')).catch(()=>{const el=document.createElement('p');el.className='result';el.textContent='Pagina nu s-a încărcat complet. Reîncarcă și continuă!';document.getElementById('app').prepend(el);});
 
