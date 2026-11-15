@@ -27,7 +27,13 @@ function multFactors(level,game){
  return [a,b];
 }
 function multQuantity(n,word){return n+(n>=20&&(n%100>=20||n%100===0)?' de ':' ')+word;}
-function multSituation(a,b,level){
+function multSituation(a,b,level,kind){
+ if(kind==='pages')return `Un copil citește ${multQuantity(a,'pagini')} în fiecare zi. Câte pagini citește în ${multQuantity(b,'zile')}, dacă citește la fel zilnic?`;
+ if(kind==='books')return `O carte are ${multQuantity(a,'pagini')}. Câte pagini au ${multQuantity(b,'cărți')}, dacă fiecare are același număr de pagini?`;
+ if(kind==='theatre')return `Un bilet la teatru costă ${multQuantity(a,'lei')}. Cât costă ${multQuantity(b,'bilete')} la fel?`;
+ if(kind==='concert')return `Un bilet la concert costă ${multQuantity(a,'lei')}. Cât costă ${multQuantity(b,'bilete')} la fel?`;
+ if(level==='tabla'&&a===3&&b===9)return 'Un bilet STB costă 3 lei. Câți lei costă în total câte o călătorie pentru 9 călători?';
+ if(level==='tabla'&&a===5&&b===6)return 'Un bilet de metrou costă 5 lei. Câți lei trebuie să plătească 6 turiști pentru câte o călătorie?';
  if(level==='tabla')return [
   `O acadea costă ${a} lei. Cât costă ${b} acadele la fel?`,
   `Într-un pachet sunt ${a} creioane. Câte creioane sunt în ${b} pachete la fel?`,
@@ -40,10 +46,17 @@ function multSituation(a,b,level){
   `O fabrică pregătește ${multQuantity(a,'caiete')} pe zi. Câte caiete pregătește în ${multQuantity(b,'zile')}, în același ritm?`
  ][multRand(0,2)];
 }
-function multUnit(question){if(question.includes('Cât costă'))return 'lei';for(const name of ['creioane','felii','pagini','vizitatori','caiete'])if(question.includes('Câte '+name)||question.includes('Câți '+name))return name;return '';}
+function multUnit(question){if(question.includes('Cât costă')||question.includes('Câți lei'))return 'lei';for(const name of ['creioane','felii','pagini','vizitatori','caiete'])if(question.includes('Câte '+name)||question.includes('Câți '+name))return name;return '';}
 function multAmount(game){return game==='spion'?6:12;}
 function multBuild(level,game,previous=[]){
  const n=multAmount(game),used=new Set(previous),round=[];let tries=0;
+ if(level==='tabla'&&game==='situatii')for(const [a,b] of [[3,9],[5,6]]){const key=a+'x'+b;if(!used.has(key)){used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level),shown:a*b,wrong:false});}}
+ if(game==='situatii'&&['zu_u','zu_zu','szu_u','szu_zu'].includes(level)){
+  const kind=level.startsWith('zu_')?'theatre':'concert';let attempts=0;
+  while(round.length===0&&attempts++<1000){const [a,b]=multFactors(level,game),key=a+'x'+b;if(used.has(key))continue;used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level,kind),shown:a*b,wrong:false});}
+  attempts=0;
+  while(round.length===1&&attempts++<1000){const [a,b]=multFactors(level,game),key=a+'x'+b;if(used.has(key))continue;used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level,level.startsWith('zu_')?'pages':'books'),shown:a*b,wrong:false});}
+ }
  while(round.length<n&&tries++<10000){const [a,b]=multFactors(level,game),key=a+'x'+b;if(used.has(key))continue;used.add(key);round.push({a,b,answer:a*b,key,question:game==='situatii'?multSituation(a,b,level):'',shown:a*b,wrong:false});}
  if(round.length!==n&&previous.length)return multBuild(level,game,[]);
  if(round.length!==n)throw Error('Nu am putut pregăti seria.');
