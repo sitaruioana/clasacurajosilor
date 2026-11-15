@@ -334,6 +334,18 @@ window.VOCAB_ADDITIONS = [
       "lesson": "16 noiembrie",
       "addedAt": "2026-11-16T07:00:00+02:00",
       "releaseAt": "2026-11-16T07:00:00+02:00"
-    }
+    },
+  {
+    "word": "răvășit",
+    "meaning": "împrăștiat",
+    "sentence": "Vântul i-a lăsat părul ___ .",
+    "answers": "răvășit",
+    "opposite": "ordonat",
+    "bonusSimilar": "risipit",
+    "bonusRhyme": "prăjit",
+    "lesson": "17 noiembrie",
+    "addedAt": "2026-11-17T07:00:00+02:00",
+    "releaseAt": "2026-11-17T07:00:00+02:00"
+  }
 ];
 
