@@ -40,7 +40,7 @@ function multSituation(a,b,level,kind){
  if(level==='tabla')return [
   `O acadea costă ${a} lei. Cât costă ${b} acadele la fel?`,
   `Într-un pachet sunt ${a} creioane. Câte creioane sunt în ${b} pachete la fel?`,
-  `Pe o farfurie sunt ${a} felii de măr. Câte felii sunt pe ${b} farfurii la fel?`,
+  `La grădiniță, pentru gustare, s-au pus câte ${a} felii de măr pe fiecare farfurie. Câte felii sunt pe ${b} farfurii la fel?`,
   `Un bilet costă ${a} lei. Cât costă ${b} bilete la fel?`
  ][multRand(0,3)];
  return [
