@@ -271,6 +271,69 @@ window.VOCAB_ADDITIONS = [
     "lesson": "Miercuri",
     "addedAt": "2026-11-11T07:00:00+02:00",
     "releaseAt": "2026-11-11T07:00:00+02:00"
-  }
+  },
+    {
+      "word": "încovoiat",
+      "meaning": "îndoit",
+      "sentence": "Trunchiul copacului era ___ de vânt.",
+      "answers": "încovoiat",
+      "opposite": "drept",
+      "bonusSimilar": "curbat",
+      "bonusRhyme": "înfoiat",
+      "lesson": "16 noiembrie",
+      "addedAt": "2026-11-16T07:00:00+02:00",
+      "releaseAt": "2026-11-16T07:00:00+02:00"
+    },
+    {
+      "word": "articulație",
+      "meaning": "încheietură",
+      "sentence": "Cotul este o ___ a brațului.",
+      "answers": "articulație",
+      "lesson": "16 noiembrie",
+      "addedAt": "2026-11-16T07:00:00+02:00",
+      "releaseAt": "2026-11-16T07:00:00+02:00"
+    },
+    {
+      "word": "bazin",
+      "meaning": "șold",
+      "sentence": "În schelet, oasele șoldurilor alcătuiesc ___ .",
+      "answers": "bazinul",
+      "lesson": "16 noiembrie",
+      "addedAt": "2026-11-16T07:00:00+02:00",
+      "releaseAt": "2026-11-16T07:00:00+02:00"
+    },
+    {
+      "word": "savant",
+      "meaning": "cercetător",
+      "sentence": "Un ___ cercetează natura și caută răspunsuri.",
+      "answers": "savant",
+      "opposite": "neștiutor",
+      "bonusSimilar": "învățat",
+      "bonusRhyme": "elefant",
+      "lesson": "16 noiembrie",
+      "addedAt": "2026-11-16T07:00:00+02:00",
+      "releaseAt": "2026-11-16T07:00:00+02:00"
+    },
+    {
+      "word": "dună",
+      "meaning": "movilă de nisip",
+      "sentence": "Vântul a format o ___ în deșert.",
+      "answers": "dună",
+      "lesson": "16 noiembrie",
+      "addedAt": "2026-11-16T07:00:00+02:00",
+      "releaseAt": "2026-11-16T07:00:00+02:00"
+    },
+    {
+      "word": "etern",
+      "meaning": "veșnic",
+      "sentence": "În poveste, eroii căutau un izvor ___ al tinereții.",
+      "answers": "etern",
+      "opposite": "trecător",
+      "bonusSimilar": "nesfârșit",
+      "bonusRhyme": "aștern",
+      "lesson": "16 noiembrie",
+      "addedAt": "2026-11-16T07:00:00+02:00",
+      "releaseAt": "2026-11-16T07:00:00+02:00"
+    }
 ];
 
