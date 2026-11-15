@@ -31,6 +31,7 @@ function multFactors(level,game){
 }
 function multQuantity(n,word){return n+(n>=20&&(n%100>=20||n%100===0)?' de ':' ')+word;}
 function multSituation(a,b,level,kind){
+ if(kind==='wafer')return `Într-un pachet sunt ${a} napolitane. Câte napolitane sunt în ${b} pachete la fel?`;
  if(kind==='pages')return `Un copil citește ${multQuantity(a,'pagini')} în fiecare zi. Câte pagini citește în ${multQuantity(b,'zile')}, dacă citește la fel zilnic?`;
  if(kind==='books')return `O carte are ${multQuantity(a,'pagini')}. Câte pagini au ${multQuantity(b,'cărți')}, dacă fiecare are același număr de pagini?`;
  if(kind==='theatre')return `Un bilet la teatru costă ${multQuantity(a,'lei')}. Cât costă ${multQuantity(b,'bilete')} la fel?`;
@@ -41,15 +42,20 @@ function multSituation(a,b,level,kind){
   `O acadea costă ${a} lei. Cât costă ${b} acadele la fel?`,
   `Într-un pachet sunt ${a} creioane. Câte creioane sunt în ${b} pachete la fel?`,
   `La grădiniță, pentru gustare, s-au pus câte ${a} felii de măr pe fiecare farfurie. Câte felii sunt pe ${b} farfurii la fel?`,
-  `Un bilet costă ${a} lei. Cât costă ${b} bilete la fel?`
- ][multRand(0,3)];
+  `Un bilet costă ${a} lei. Cât costă ${b} bilete la fel?`,
+  `Într-un pachet sunt ${a} napolitane. Câte napolitane sunt în ${b} pachete la fel?`,
+  `O ciocolată costă ${a} lei. Cât costă ${b} ciocolate la fel?`,
+  `O felie de salam de biscuiți costă ${a} lei. Cât costă ${b} felii la fel?`,
+  `Un croissant costă ${a} lei. Cât costă ${b} croissante la fel?`,
+  `O pungă de pufuleți costă ${a} lei. Cât costă ${b} pungi la fel?`
+ ][multRand(0,8)];
  return [
   `O tipografie imprimă ${multQuantity(a,'pagini')} pe zi. Câte pagini imprimă în ${multQuantity(b,'zile')}, în același ritm?`,
   `Un muzeu primește ${multQuantity(a,'vizitatori')} pe zi. Câți vizitatori primește în ${multQuantity(b,'zile')}, dacă numărul este același în fiecare zi?`,
   `O fabrică pregătește ${multQuantity(a,'caiete')} pe zi. Câte caiete pregătește în ${multQuantity(b,'zile')}, în același ritm?`
  ][multRand(0,2)];
 }
-function multUnit(question){if(question.includes('Cât costă')||question.includes('Câți lei'))return 'lei';for(const name of ['creioane','felii','pagini','vizitatori','caiete'])if(question.includes('Câte '+name)||question.includes('Câți '+name))return name;return '';}
+function multUnit(question){if(question.includes('Cât costă')||question.includes('Câți lei'))return 'lei';for(const name of ['creioane','felii','pagini','vizitatori','caiete','napolitane'])if(question.includes('Câte '+name)||question.includes('Câți '+name))return name;return '';}
 const MULT_MIND_PAIRS={
  zu_u:[[15,6],[15,2],[15,4],[15,8],[15,9],[75,2],[75,4],[75,6],[75,8],[75,9]],
  szu_u:[[250,9],[125,8],[250,4],[150,6],[200,4],[300,3],[200,9],[300,9],[400,9],[500,9]],
@@ -97,6 +103,7 @@ function multBuild(level,game,previous=[]){
  if(game==='istetei'){const bank=multMindBank(level),used=new Set(previous),available=bank.map((_,i)=>i).filter(i=>!used.has('mind-'+i));if(available.length<12)return multBuild(level,game,[]);const picks=vocabShuffle(available);if(previous.length===0&&level!=='tabla'){const preferred=level==='szu_u'?2:0;const pos=picks.indexOf(preferred);if(pos>=0)picks.unshift(...picks.splice(pos,1));}const round=picks.slice(0,12).map(i=>({key:'mind-'+i,question:bank[i].question,answer:bank[i].answer,hint:bank[i].hint,shown:bank[i].answer,wrong:false}));for(const t of round)used.add(t.key);return {round,seen:[...used]};}
  const n=multAmount(game),used=new Set(previous),round=[];let tries=0;
  if(level==='tabla'&&game==='situatii')for(const [a,b] of [[3,9],[5,6]]){const key=a+'x'+b;if(!used.has(key)){used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level),shown:a*b,wrong:false});}}
+ if(level==='tabla'&&game==='situatii'&&previous.length===0){const a=9,b=4,key='9x4';if(!used.has(key)){used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level,'wafer'),shown:a*b,wrong:false,fixedWafer:true});}}
  if(game==='situatii'&&['zu_u','zu_zu','szu_u','szu_zu'].includes(level)){
   const kind=level.startsWith('zu_')?'theatre':'concert';let attempts=0;
   while(round.length===0&&attempts++<1000){const [a,b]=multFactors(level,game),key=a+'x'+b;if(used.has(key))continue;used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level,kind),shown:a*b,wrong:false});}
@@ -106,6 +113,7 @@ function multBuild(level,game,previous=[]){
  while(round.length<n&&tries++<10000){const [a,b]=multFactors(level,game),key=a+'x'+b;if(used.has(key))continue;used.add(key);round.push({a,b,answer:a*b,key,question:game==='situatii'?multSituation(a,b,level):'',shown:a*b,wrong:false});}
  if(round.length!==n&&previous.length)return multBuild(level,game,[]);
  if(round.length!==n)throw Error('Nu am putut pregăti seria.');
+ if(level==='tabla'&&game==='situatii'){const i=round.findIndex(t=>t.fixedWafer);if(i>=0)round.splice(10,0,round.splice(i,1)[0]);}
  if(game==='spion')for(const i of vocabShuffle(Array.from({length:n},(_,j)=>j)).slice(0,2)){const task=round[i],offset=task.answer<10?multRand(1,3):[1,10,100][multRand(0,2)];task.wrong=true;task.shown=task.answer+offset;}
  return {round,seen:[...used]};
 }
