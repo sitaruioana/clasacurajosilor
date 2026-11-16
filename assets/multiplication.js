@@ -30,7 +30,25 @@ function multFactors(level,game){
  return [a,b];
 }
 function multQuantity(n,word){return n+(n>=20&&(n%100>=20||n%100===0)?' de ':' ')+word;}
+const MULT_PRICE_CATALOG={
+ zu:[[12,'Un kilogram de zahăr','kilograme de zahăr'],[15,'O ciocolată','ciocolate'],[18,'Un pachet de cafea','pachete de cafea'],[22,'O sticlă de ulei','sticle de ulei'],[25,'O cutie de creioane','cutii de creioane'],[28,'Un borcan de miere','borcane de miere'],[30,'Un bilet la cinema','bilete la cinema'],[35,'O carte','cărți'],[42,'Un puzzle','puzzle-uri'],[48,'Un kilogram de brânză','kilograme de brânză'],[60,'Un kilogram de nuci','kilograme de nuci'],[75,'O minge','mingi'],[90,'Un ghiozdan','ghiozdane']],
+ szu:[[123,'Un kilogram de somon','kilograme de somon'],[287,'Un kilogram de cafea','kilograme de cafea'],[110,'Un kilogram de somon','kilograme de somon'],[125,'Un kilogram de unt','kilograme de unt'],[130,'Un kilogram de unt','kilograme de unt'],[150,'Un kilogram de miere','kilograme de miere'],[175,'Un kilogram de cafea','kilograme de cafea'],[180,'Un kilogram de brânză','kilograme de brânză'],[200,'Un kilogram de nuci','kilograme de nuci'],[240,'Un kilogram de cafea','kilograme de cafea'],[270,'Un kilogram de cafea','kilograme de cafea'],[300,'Un kilogram de somon','kilograme de somon']],
+ mszu:[[1299,'O bicicletă','biciclete'],[1499,'O trotinetă','trotinete'],[1799,'Un aspirator','aspiratoare'],[2299,'O mașină de spălat','mașini de spălat'],[2499,'Un laptop','laptopuri'],[2999,'Un televizor','televizoare'],[3499,'Un laptop','laptopuri'],[3999,'Un frigider','frigidere'],[4999,'Un laptop','laptopuri'],[5499,'Un televizor','televizoare'],[6499,'Un calculator','calculatoare'],[7999,'Un calculator','calculatoare']]
+};
+function multPriceCatalog(level){return MULT_PRICE_CATALOG[level.startsWith('zu_')?'zu':level.startsWith('szu_')?'szu':'mszu'];}
+function multPriceQuestion(a,b,level){
+ if(level==='tabla')return [
+  `O acadea costă ${a} lei. Cât costă ${b} acadele la fel?`,
+  `O ciocolată costă ${a} lei. Cât costă ${b} ciocolate la fel?`,
+  `O felie de salam de biscuiți costă ${a} lei. Cât costă ${b} felii la fel?`,
+  `Un croissant costă ${a} lei. Cât costă ${b} croissante la fel?`,
+  `O pungă de pufuleți costă ${a} lei. Cât costă ${b} pungi la fel?`
+ ][multRand(0,4)];
+ const item=multPriceCatalog(level).find(x=>x[0]===a);if(!item)throw Error('Prețul nu are produs asociat.');
+ return `${item[1]} costă ${multQuantity(a,'lei')}. Cât costă ${multQuantity(b,item[2])}?`;
+}
 function multSituation(a,b,level,kind){
+ if(kind==='price')return multPriceQuestion(a,b,level);
  if(kind==='wafer')return `Într-un pachet sunt ${a} napolitane. Câte napolitane sunt în ${b} pachete la fel?`;
  if(kind==='pages')return `Un copil citește ${multQuantity(a,'pagini')} în fiecare zi. Câte pagini citește în ${multQuantity(b,'zile')}, dacă citește la fel zilnic?`;
  if(kind==='books')return `O carte are ${multQuantity(a,'pagini')}. Câte pagini au ${multQuantity(b,'cărți')}, dacă fiecare are același număr de pagini?`;
@@ -49,19 +67,29 @@ function multSituation(a,b,level,kind){
   `Un croissant costă ${a} lei. Cât costă ${b} croissante la fel?`,
   `O pungă de pufuleți costă ${a} lei. Cât costă ${b} pungi la fel?`
  ][multRand(0,8)];
+ let crowd;
+ if(level.startsWith('zu_'))crowd=`Un muzeu primește ${multQuantity(a,'vizitatori')} pe zi. Câți vizitatori primește în ${multQuantity(b,'zile')}, dacă numărul este același în fiecare zi?`;
+ else if(level.startsWith('szu_'))crowd=[
+  `Un magazin primește ${multQuantity(a,'clienți')} pe zi. Câți clienți primește în ${multQuantity(b,'zile')}, dacă numărul este același în fiecare zi?`,
+  `Un cinema primește ${multQuantity(a,'spectatori')} pe zi. Câți spectatori primește în ${multQuantity(b,'zile')}, dacă numărul este același în fiecare zi?`
+ ][multRand(0,1)];
+ else crowd=[
+  `Pe un stadion vin ${multQuantity(a,'fani')} la fiecare meci. Câți fani vin în total la ${multQuantity(b,'meciuri')}, dacă sunt la fel de mulți la fiecare meci?`,
+  `La fiecare concert vin ${multQuantity(a,'fani')}. Câți fani vin în total la ${multQuantity(b,'concerte')}, dacă sunt la fel de mulți la fiecare concert?`
+ ][multRand(0,1)];
  return [
   level.startsWith('zu_')?`O imprimantă imprimă ${multQuantity(a,'pagini')} pe zi. Câte pagini imprimă în ${multQuantity(b,'zile')}, în același ritm?`:level.startsWith('szu_')?`Un centru de copiere (xerox) imprimă ${multQuantity(a,'pagini')} pe zi. Câte pagini imprimă în ${multQuantity(b,'zile')}, în același ritm?`:`O tipografie imprimă ${multQuantity(a,'pagini')} pe zi. Câte pagini imprimă în ${multQuantity(b,'zile')}, în același ritm?`,
-  `Un muzeu primește ${multQuantity(a,'vizitatori')} pe zi. Câți vizitatori primește în ${multQuantity(b,'zile')}, dacă numărul este același în fiecare zi?`,
+  crowd,
   level.startsWith('zu_')?`Într-o librărie se vând ${multQuantity(a,'caiete')} pe zi. Câte caiete se vând în ${multQuantity(b,'zile')}, în același ritm?`:level.startsWith('szu_')?`Un supermarket vinde ${multQuantity(a,'caiete')} pe zi. Câte caiete vinde în ${multQuantity(b,'zile')}, în același ritm?`:`O fabrică produce ${multQuantity(a,'caiete')} pe zi. Câte caiete produce în ${multQuantity(b,'zile')}, în același ritm?`
  ][multRand(0,2)];
 }
 function multStoryIcons(task){
  const q=task.question;let icon='';
- if(q.includes('STB'))icon='🚌';else if(q.includes('metrou'))icon='🚇';else if(q.includes('teatru'))icon='🎭';else if(q.includes('concert'))icon='🎵';else if(q.includes('acadea'))icon='🍭';else if(q.includes('ciocolată'))icon='🍫';else if(q.includes('salam de biscuiți')||q.includes('napolitane'))icon='🍪';else if(q.includes('croissant'))icon='🥐';else if(q.includes('pufuleți'))icon='🍿';else if(q.includes('felii de măr'))icon='🍎';else if(q.includes('creioane'))icon='✏️';else if(q.includes('carte')||q.includes('cărți'))icon='📚';else if(q.includes('imprimantă')||q.includes('copiere')||q.includes('tipografie'))icon='🖨️';else if(q.includes('pagini'))icon='📖';else if(q.includes('fișe'))icon='📄';else if(q.includes('muzeu'))icon='🏛️';else if(q.includes('caiete'))icon='📒';
+ if(q.includes('STB'))icon='🚌';else if(q.includes('metrou'))icon='🚇';else if(q.includes('teatru'))icon='🎭';else if(q.includes('concert'))icon='🎵';else if(q.includes('stadion'))icon='⚽';else if(q.includes('cinema'))icon='🎬';else if(q.includes('magazin'))icon='🛒';else if(q.includes('acadea'))icon='🍭';else if(q.includes('ciocolată'))icon='🍫';else if(q.includes('cafea'))icon='☕';else if(q.includes('somon'))icon='🐟';else if(q.includes('unt'))icon='🧈';else if(q.includes('zahăr')||q.includes('brânză')||q.includes('nuci'))icon='🛒';else if(q.includes('cafea'))icon='☕';else if(q.includes('somon'))icon='🐟';else if(q.includes('unt'))icon='🧈';else if(q.includes('zahăr')||q.includes('brânză')||q.includes('nuci'))icon='🛒';else if(q.includes('salam de biscuiți')||q.includes('napolitane'))icon='🍪';else if(q.includes('croissant'))icon='🥐';else if(q.includes('pufuleți'))icon='🍿';else if(q.includes('felii de măr'))icon='🍎';else if(q.includes('creioane'))icon='✏️';else if(q.includes('carte')||q.includes('cărți'))icon='📚';else if(q.includes('imprimantă')||q.includes('copiere')||q.includes('tipografie'))icon='🖨️';else if(q.includes('pagini'))icon='📖';else if(q.includes('fișe'))icon='📄';else if(q.includes('muzeu'))icon='🏛️';else if(q.includes('caiete'))icon='📒';
  const money=multUnit(q)==='lei'?((task.a+task.b)%2?'💰':'💸'):'';
  return [icon,money].filter(Boolean).join(' ');
 }
-function multUnit(question){if(question.includes('Cât costă')||question.includes('Câți lei'))return 'lei';for(const name of ['creioane','felii','pagini','vizitatori','caiete','napolitane','fișe'])if(question.includes('Câte '+name)||question.includes('Câți '+name))return name;return '';}
+function multUnit(question){if(question.includes('Cât costă')||question.includes('Câți lei'))return 'lei';for(const name of ['creioane','felii','pagini','vizitatori','clienți','spectatori','fani','caiete','napolitane','fișe'])if(question.includes('Câte '+name)||question.includes('Câți '+name))return name;return '';}
 const MULT_MIND_PAIRS={
  zu_u:[[15,6],[15,2],[15,4],[15,8],[15,9],[75,2],[75,4],[75,6],[75,8],[75,9]],
  szu_u:[[250,9],[125,8],[250,4],[150,6],[200,4],[300,3],[200,9],[300,9],[400,9],[500,9]],
@@ -81,7 +109,30 @@ function multMindStrategy(a,b){
  if(b===25)return `Împarte ${a} la 4, apoi înmulțește rezultatul cu 100.`;
  return 'Urmează pașii pe rând.';
 }
+function multContextFacts(question){
+ const q=question.toLocaleLowerCase('ro-RO'),facts=[];
+ if(q.includes('luni dintr-un an'))facts.push('Un an are 12 luni.');
+ if(q.includes('caracatiț'))facts.push('O caracatiță are 8 brațe.');
+ if(q.includes('săptămân'))facts.push('O săptămână are 7 zile.');
+ if(q.includes('triunghi'))facts.push('Un triunghi are 3 laturi.');
+ if(q.includes('pătrat'))facts.push('Un pătrat are 4 laturi și 4 colțuri.');
+ if(q.includes('anotimp'))facts.push('Un an are 4 anotimpuri.');
+ if(q.includes('luni de vară')||q.includes('lunilor de vară'))facts.push('Vara are 3 luni.');
+ if(q.includes('weekend'))facts.push('Un weekend are 2 zile.');
+ if(q.includes('bisect'))facts.push('Într-un an bisect, februarie are 29 de zile.');
+ if(q.includes('ore dintr-o zi'))facts.push('O zi are 24 de ore.');
+ if(q.includes('degete de la două mâini'))facts.push('Două mâini au împreună 10 degete.');
+ if(q.includes('două biciclete'))facts.push('Două biciclete au împreună 4 roți.');
+ else if(q.includes('unei biciclete'))facts.push('O bicicletă are 2 roți.');
+ if(q.includes('automobil'))facts.push('Un automobil are 4 roți.');
+ if(q.includes('colțuri ale unei cărți'))facts.push('O carte dreptunghiulară are 4 colțuri.');
+ if(q.includes('ferestre dreptunghiulare'))facts.push('O fereastră dreptunghiulară are 4 colțuri.');
+ if(q.includes('planete din sistemul solar'))facts.push('Sistemul Solar are 8 planete.');
+ if(q.includes('echipe de fotbal'))facts.push('O echipă de fotbal are 11 jucători pe teren.');
+ return facts.join(' ');
+}
 function multMindTableHint(question){
+ const fact=multContextFacts(question);if(fact)return fact;
  const tips=[];
  if(/tripleaz/i.test(question))tips.push('Triplează: adună numărul de trei ori sau dublează-l și mai adaugă-l o dată.');
  if(/dubleaz/i.test(question))tips.push('Dublează: adună numărul cu el însuși.');
@@ -96,9 +147,9 @@ function multMindBank(level){
   const product=a*b,prefix=`Începe cu numărul ${a}. Înmulțește-l cu ${b}. `,hint=multMindStrategy(a,b);
   return [
    {question:prefix+'Ce rezultat ai obținut?',answer:product,hint},
-   {question:prefix+'Adaugă numărul de laturi ale unui triunghi. Ce rezultat ai obținut?',answer:product+3,hint},
-   {question:prefix+'Adaugă numărul de zile dintr-o săptămână. Ce rezultat ai obținut?',answer:product+7,hint},
-   {question:prefix+'Adaugă numărul de laturi ale unui pătrat. Ce rezultat ai obținut?',answer:product+4,hint},
+   {question:prefix+'Adaugă numărul de laturi ale unui triunghi. Ce rezultat ai obținut?',answer:product+3,hint:hint+' Un triunghi are 3 laturi.'},
+   {question:prefix+'Adaugă numărul de zile dintr-o săptămână. Ce rezultat ai obținut?',answer:product+7,hint:hint+' O săptămână are 7 zile.'},
+   {question:prefix+'Adaugă numărul de laturi ale unui pătrat. Ce rezultat ai obținut?',answer:product+4,hint:hint+' Un pătrat are 4 laturi.'},
    {question:prefix+'Care este prima cifră a rezultatului?',answer:Number(String(product)[0]),hint},
    {question:prefix+'Care este ultima cifră a rezultatului?',answer:product%10,hint}
   ];
@@ -116,7 +167,26 @@ function multBuild(level,game,previous=[]){
   attempts=0;
   while(round.length===1&&attempts++<1000){const [a,b]=multFactors(level,game),key=a+'x'+b;if(used.has(key))continue;used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level,level.startsWith('zu_')?'pages':'books'),shown:a*b,wrong:false});}
  }
- while(round.length<n&&tries++<10000){const [a,b]=multFactors(level,game),key=a+'x'+b;if(used.has(key))continue;used.add(key);round.push({a,b,answer:a*b,key,question:game==='situatii'?multSituation(a,b,level):'',shown:a*b,wrong:false});}
+ if(game==='situatii'){
+  const priceCount=()=>round.filter(t=>multUnit(t.question)==='lei').length;
+  if(previous.length===0&&level!=='tabla'){
+   const preferred=level.startsWith('szu_')?[123,287]:level.startsWith('zu_')?[12]:[];
+   const minimum=level.endsWith('_zu')?10:2,maximum=level.endsWith('_zu')?99:9;
+   for(const a of preferred){const candidates=vocabShuffle(Array.from({length:maximum-minimum+1},(_,i)=>i+minimum)),b=candidates.find(n=>!used.has(a+'x'+n));if(b!==undefined){const key=a+'x'+b;used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level,'price'),shown:a*b,wrong:false});}}
+  }
+  let priceTries=0;
+  while(priceCount()<6&&round.length<n&&priceTries++<10000){
+   const factors=multFactors(level,game),b=factors[1],catalog=level==='tabla'?null:multPriceCatalog(level),a=catalog?catalog[multRand(0,catalog.length-1)][0]:factors[0],key=a+'x'+b;
+   if(used.has(key))continue;used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level,'price'),shown:a*b,wrong:false});
+  }
+  if(priceCount()<6&&previous.length)return multBuild(level,game,[]);
+ }
+ while(round.length<n&&tries++<10000){
+  const [a,b]=multFactors(level,game),key=a+'x'+b;if(used.has(key))continue;
+  const question=game==='situatii'?multSituation(a,b,level):'';
+  if(game==='situatii'&&/imprimantă imprimă|centru de copiere|tipografie imprimă/i.test(question)&&round.some(t=>/imprimantă imprimă|centru de copiere|tipografie imprimă/i.test(t.question)))continue;
+  used.add(key);round.push({a,b,answer:a*b,key,question,shown:a*b,wrong:false});
+ }
  if(round.length!==n&&previous.length)return multBuild(level,game,[]);
  if(round.length!==n)throw Error('Nu am putut pregăti seria.');
  if(level==='tabla'&&game==='situatii'){const i=round.findIndex(t=>t.fixedWafer);if(i>=0)round.splice(10,0,round.splice(i,1)[0]);}
@@ -125,12 +195,12 @@ function multBuild(level,game,previous=[]){
 }
 function multKey(){return route.join('/');}
 function multTarget(game){return game==='istetei'?1:game==='situatii'?2:5;}
-function multCompleted(){const p=rewardRead(),key=multKey(),target=multTarget(route[3]),n=p.multiplicationRounds?.[key];if(p.stages[key])return target;if(Number.isInteger(n)&&n>=target){p.stages[key]=true;rewardSave(p);return target;}return Number.isInteger(n)?Math.max(0,Math.min(target,n)):0;}
+function multCompleted(){const p=rewardRead(),key=multKey(),target=multTarget(route[3]),n=p.multiplicationRounds?.[key],count=Number.isSafeInteger(n)&&n>=0?n:0;if(!p.stages[key]&&count>=target){p.stages[key]=true;rewardSave(p);}return p.stages[key]?Math.max(target,count):count;}
 function multMigrateProgress(){const p=rewardRead(),rounds=p.multiplicationRounds;if(!rounds||typeof rounds!=='object'||Array.isArray(rounds))return;let changed=false;for(const level of Object.keys(MULT_LEVELS))for(const game of Object.keys(MULT_GAMES)){const key=['math','multiply',level,game].join('/'),n=rounds[key];if(Number.isInteger(n)&&n>=multTarget(game)&&!p.stages[key]){p.stages[key]=true;changed=true;}}if(changed)rewardSave(p);}
 function multSaveRound(){
  const p=rewardRead(),key=multKey();if(!p.multiplicationRounds||typeof p.multiplicationRounds!=='object'||Array.isArray(p.multiplicationRounds))p.multiplicationRounds={};
- const prior=Number.isInteger(p.multiplicationRounds[key])?Math.max(0,Math.min(5,p.multiplicationRounds[key])):0;
- p.multiplicationRounds[key]=Math.min(5,prior+1);if(p.multiplicationRounds[key]>=multTarget(route[3]))p.stages[key]=true;
+ const stored=p.multiplicationRounds[key],count=Number.isSafeInteger(stored)&&stored>=0?stored:0,prior=p.stages[key]?Math.max(multTarget(route[3]),count):count;
+ p.multiplicationRounds[key]=Math.min(Number.MAX_SAFE_INTEGER,prior+1);if(p.multiplicationRounds[key]>=multTarget(route[3]))p.stages[key]=true;
  return rewardSave(p);
 }
 function multSetup(){if(!state.__multRound){const made=multBuild(route[2],route[3],state.__multSeen||[]);state.__multRound=made.round;state.__multSeen=made.seen;state.__multFinished=false;}return state.__multRound;}
@@ -138,10 +208,10 @@ function multSet(i,key,value){state['mult-'+i+'-'+key]=value;const task=document
 function multRender(level,game){
  if(!MULT_LEVELS[level])return view(`<div class="hero"><h2>✖️ Înmulțirea</h2><p>Alege de unde vrei să începi!</p></div><div class="cards">${Object.entries(MULT_LEVELS).map(([id,[title,description]],i)=>card((i+1)+'. '+title,description,`go('math','multiply','${id}')`)).join('')}</div>`);
  if(!MULT_GAMES[game])return view(`<div class="hero"><h2>✖️ ${esc(MULT_LEVELS[level][0])}</h2><p>Alege un joc!</p></div><div class="cards">${Object.entries(MULT_GAMES).map(([id,[title,description]],i)=>card((i+1)+'. '+title,description,`go('math','multiply','${level}','${id}')`,id==='istetei'?'2026-11-15T00:00:00+02:00':undefined)).join('')}</div>`);
- const n=multAmount(game),target=multTarget(game),round=multSetup(),done=multCompleted(),shownRound=state.__multFinished?Math.max(1,done):Math.min(target,done+1);
+ const n=multAmount(game),target=multTarget(game),round=multSetup(),done=multCompleted();
  const instruction=game==='istetei'?'Calculează mintal, urmând pașii, și scrie răspunsul.':game==='spion'?'În fiecare serie sunt două calcule greșite. Alege „Corect” sau „Greșit”; pentru cele greșite, scrie rezultatul corect.':game==='situatii'?'Citește fiecare problemă și scrie răspunsul.':'Calculează și scrie rezultatul.';
  const rows=round.map((t,i)=>{let answer=esc(String(state['mult-'+i+'-answer']??''));let q=game==='istetei'?esc(t.question).replace(/([.!?])\s+/g,'$1<br>'):game==='situatii'?(esc(multStoryIcons(t))+' '+esc(t.question)).trim():`${t.a} × ${t.b} = ${game==='spion'?t.shown:'?'}`;let control=game==='spion'?`<div class="options"><label class="option"><input type="radio" name="mult-${i}" ${state['mult-'+i+'-choice']==='correct'?'checked':''} onchange="multSet(${i},'choice','correct')"> Corect</label><label class="option"><input type="radio" name="mult-${i}" ${state['mult-'+i+'-choice']==='wrong'?'checked':''} onchange="multSet(${i},'choice','wrong')"> Greșit</label></div><label>Rezultatul corect, dacă este greșit: <input class="entry" inputmode="numeric" type="text" autocomplete="off" aria-label="Rezultatul corect la exercițiul ${i+1}" value="${answer}" oninput="multSet(${i},'answer',this.value)"></label>`:`<label>Răspuns: <input class="entry" inputmode="numeric" type="text" autocomplete="off" aria-label="Răspunsul exercițiului ${i+1}" value="${answer}" oninput="multSet(${i},'answer',this.value)">${game==='situatii'?' '+esc(multUnit(t.question)):''}</label>`;return `<div class="task" id="mult-task-${i}"><p><b>${i+1}.</b> ${q}</p>${control}${game==='istetei'?`<details><summary>💡 Indiciu</summary><p class="hint">${esc(t.hint)}</p></details>`:''}<div class="mult-feedback" aria-live="polite"></div></div>`;}).join('');
- view(`<div class="hero"><div class="section-label">${esc(MULT_LEVELS[level][0])}</div><h2>${esc(MULT_GAMES[game][0])}</h2><p>${instruction}</p><p id="mult-progress">${done>=target?'🌟 Joc încheiat! Poți continua să exersezi.':`Seria ${shownRound} din ${target} · ${done} din ${target} ${target===1?'serie încheiată':'serii încheiate'}`}</p></div><div class="panel">${rows}<div class="row"><button class="btn" onclick="multVerify()">✓ Verifică</button><button class="btn alt" id="mult-next" onclick="multNext()" ${state.__multFinished?'':'disabled'}>Încă ${n} ${game==='calcule'?'calcule':'exerciții'} →</button></div><div id="mult-score" aria-live="polite"></div></div>`);
+ view(`<div class="hero"><div class="section-label">${esc(MULT_LEVELS[level][0])}</div><h2>${esc(MULT_GAMES[game][0])}</h2><p>${instruction}</p><p id="mult-progress">În pașaport îți trebuie ${target===1?'o serie':target+' serii'}!<br>Serii încheiate: ${done}</p></div><div class="panel">${rows}<div class="row"><button class="btn" onclick="multVerify()">✓ Verifică</button><button class="btn alt" id="mult-next" onclick="multNext()" ${state.__multFinished?'':'disabled'}>Încă ${n} ${game==='calcule'?'calcule':'exerciții'} →</button></div><div id="mult-score" aria-live="polite"></div></div>`);
 }
 function multVerify(){
  const rows=multSetup(),game=route[3],ids=[];let attempted=0;
@@ -149,7 +219,7 @@ function multVerify(){
  const earned=rewardGrant('math',ids);let saved=true;
  if(attempted===rows.length&&!state.__multFinished){saved=multSaveRound();if(saved)state.__multFinished=true;}
  const target=multTarget(game),done=multCompleted(),score=document.getElementById('mult-score');score.innerHTML=`<div class="result">${ids.length} din ${rows.length} răspunsuri corecte. ${!saved?'Nu am putut salva seria pe acest dispozitiv. Încearcă din nou.':ids.length===rows.length?'Bravo! 🌟':attempted===rows.length?'Ai lucrat toată seria! Poți corecta sau poți continua.':'Poți completa și verifica din nou.'}</div>`+rewardMessage(earned,'math');
- if(state.__multFinished){document.getElementById('mult-next').disabled=false;document.getElementById('mult-progress').textContent=done>=target?'🌟 Joc încheiat! Poți continua să exersezi.':`${done} din ${target} serii încheiate!`;if(done===target)score.innerHTML+='<p class="reward-stage">✓ Joc bifat în pașaport!</p>';const chapter=rewardCurrentChapter();if(chapter&&chapter.diploma&&rewardComplete(chapter))score.innerHTML+=rewardDiplomaOffer(chapter);}
+ if(state.__multFinished){document.getElementById('mult-next').disabled=false;document.getElementById('mult-progress').innerHTML=`În pașaport îți trebuie ${target===1?'o serie':target+' serii'}!<br>Serii încheiate: ${done}`;if(done>=target)score.innerHTML+='<p class="reward-stage">✓ Joc bifat în pașaport!</p>';const chapter=rewardCurrentChapter();if(chapter&&chapter.diploma&&rewardComplete(chapter))score.innerHTML+=rewardDiplomaOffer(chapter);}
 }
 function multNext(){if(!state.__multFinished)return;const seen=state.__multSeen||[];state={__multSeen:seen};multRender(route[2],route[3]);window.scrollTo(0,0);}
 const multOldRender=render;render=function(){if(route[0]==='math'&&route[1]==='multiply')return multRender(route[2],route[3]);return multOldRender();};
