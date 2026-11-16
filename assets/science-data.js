@@ -821,9 +821,12 @@ window.SCIENCE_LESSONS = {
     ]
   },
   "pollution": {
+    "crossword": [["Ce se ridică dintr-un incendiu și poate polua aerul?","FUM",2],["Cum numim lucrurile aruncate, pe care le putem sorta pentru reciclare?","DEȘEURI",1],["Loc cu mulți copaci, pe care îl protejăm de tăieri și incendii.","PĂDURE",2],["Cum se numește transformarea deșeurilor în materiale care pot fi refolosite?","RECICLARE",3],["Stratul de pământ în care cresc plantele poate fi poluat de gunoaie. Cum se numește?","SOLUL",3]],
+    "crosswordSecret": "MEDIU",
     "title": "Poluarea apei, a aerului și a solului. Influența pozitivă a omului asupra mediului",
     "intro": "Protejăm mediul prin alegerile noastre",
     "sections": [
+      "crossword",
       "gaps",
       "tf",
       "choice"
