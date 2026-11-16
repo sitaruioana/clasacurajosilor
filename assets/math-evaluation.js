@@ -61,7 +61,7 @@ FRIENDLY_ROUTES['matematica/bonus-evaluare']=['math','evaluation'];
 for(const key of Object.keys(MATH_EVAL_TYPES))FRIENDLY_ROUTES['matematica/bonus-evaluare/'+key]=['math','evaluation',key];
 const mathEvalRenameAt=Date.parse('2026-11-16T12:00:00+02:00');
 function mathEvalTitle(){return Date.now()>=mathEvalRenameAt?'Bonus: învățare remedială':'Bonus: antrenament pentru evaluare';}
-rewardChapter('math-evaluation','math',mathEvalTitle(),Object.entries(MATH_EVAL_TYPES).map(([key,title])=>[title,['math','evaluation',key]]),true);
+
 const mathEvalOldCrumbs=crumbs;crumbs=function(){let html=mathEvalOldCrumbs().replace('>evaluation</button>','>'+mathEvalTitle()+'</button>');for(const [key,title] of Object.entries(MATH_EVAL_TYPES))html=html.replace('>'+key+'</button>','>'+title+'</button>');return html;};
 const mathEvalOldLoad=loadProgress;loadProgress=function(){return route[0]==='math'&&route[1]==='evaluation'&&route[2]?{}:mathEvalOldLoad();};
 const mathEvalOldView=view;view=function(html){const menu=route[0]==='math'&&!route[1];if(menu)html=html.replace('<div class="cards">','<div class="cards">'+card('⭐ '+mathEvalTitle(),'Jocuri cu adunări, scăderi și probleme',"go('math','evaluation')",'2026-11-12T00:00:00+02:00'));const result=mathEvalOldView(html);if(menu){const grid=document.querySelector('#app .cards');const detective=grid&&[...grid.querySelectorAll('.card')].find(el=>el.textContent.includes('Detectivii numerelor'));if(detective)grid.appendChild(detective);}return result;};
@@ -79,11 +79,12 @@ function mathEvalVerify(){let rows=MATH_EVAL[route[2]],ids=[];rows.forEach((t,i)
 function mathEvalRepeat(){state={};mathEvalRender(route[2]);window.scrollTo(0,0);}
 const mathEvalOldRender=render;render=function(){if(route[0]==='math'&&route[1]==='evaluation')return mathEvalRender(route[2]);return mathEvalOldRender();};
 
+let mathEvalLastTitle=mathEvalTitle();
 function mathEvalSyncTitle(){
- const chapter=REWARD_CHAPTERS.find(c=>c.id==='math-evaluation'),title=mathEvalTitle();
- if(!chapter||chapter.title===title)return;
- chapter.title=title;
- if((route[0]==='math'&&(!route[1]||(route[1]==='evaluation'&&!route[2])))||route[0]==='passport')render();
+ const title=mathEvalTitle();
+ if(mathEvalLastTitle===title)return;
+ mathEvalLastTitle=title;
+ if(route[0]==='math'&&(!route[1]||(route[1]==='evaluation'&&!route[2])))render();
 }
 if(Date.now()<mathEvalRenameAt)setTimeout(mathEvalSyncTitle,Math.min(2147483647,math.max(1,mathEvalRenameAt-Date.now())));
 window.addEventListener('focus',mathEvalSyncTitle);

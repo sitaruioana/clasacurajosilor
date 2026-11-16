@@ -12,7 +12,7 @@ rewardChapter('math-unknown','math','Aflarea numărului necunoscut',Object.entri
 rewardChapter('math-order','math','Ordinea operațiilor',Object.entries(ORDER_TYPES).map(([id,[name]])=>[name,['math','order',id]]),true);
 const rewardNumerTitles=['Numere consecutive','Șiruri cu pas','Numerotarea paginilor: cifre','Numerotarea paginilor: pagini','Strângeri de mână și perechi','Formarea numerelor: cifre diferite','Formarea numerelor: pare și impare'];
 rewardChapter('math-numer','math','Detectivii numerelor',rewardNumerTitles.map((name,i)=>[(i+1)+'. '+name,['math','numer',String(i)]]),true);
-rewardChapter('llr-vocab','llr','Vocabular',[['Găsește perechea · o rundă de 10',['llr','vocab','match']],['Scrie cuvinte · o rundă de 10',['llr','vocab','similar']],['Completează 10 propoziții',['llr','vocab','gaps']],['10 cuvinte cu sens opus',['llr','vocab','opposite']]]);
+rewardChapter('llr-vocab','llr','Vocabular',[['Găsește perechea · o rundă de 10',['llr','vocab','match']],['Scrie cuvinte · o rundă de 10',['llr','vocab','similar']],['Completează 10 propoziții',['llr','vocab','gaps']]]);
 for(const [type,title] of Object.entries(orthoNames)){
  const transform=type!=='comp'&&(!EXTRA_ORTHO[type]||!!EXTRA_ORTHO[type].transforms);
  rewardChapter('ortho-'+type,'llr','Ortograme: '+title,[['Alege forma corectă','choose'],['Completează textul','text'],...(transform?[['Transformă după model','transform']]:[]),['Detectivul greșelilor','errors']].map(([n,p])=>[n,['llr','ortho',type,p]]));
@@ -48,9 +48,10 @@ const rewardCheers=['Corect! 🌟','Bravo! 🎉','Ai reușit! 🌈','Excelent! �
 function rewardMessage(earned,subject){if(!earned)return '';const cheer=rewardCheers[rewardCheerIndex++%rewardCheers.length];return `<p class="reward-earned" role="status">${REWARD_SUBJECTS[subject][0]} +${earned}! ${cheer}</p>`;}
 function rewardAfter(ids,total,target,subject=route[0]==='math'?'math':route[0]==='science'?'science':'llr'){
  const earned=rewardGrant(subject,ids);
- if(total>0&&ids.length===total)rewardMark(route.join('/'));
+ const bonusActivity=route[0]==='math'&&route[1]==='evaluation';
+ if(!bonusActivity&&total>0&&ids.length===total)rewardMark(route.join('/'));
  const chapter=rewardCurrentChapter(),complete=chapter&&rewardComplete(chapter);
- const el=document.querySelector(target);if(el){el.innerHTML+=rewardMessage(earned,subject);if(total>0&&ids.length===total)el.innerHTML+='<p class="reward-stage">✓ Etapă bifată în pașaport!</p>';if(complete&&chapter.diploma)el.innerHTML+=rewardDiplomaOffer(chapter);}
+ const el=document.querySelector(target);if(el){el.innerHTML+=rewardMessage(earned,subject);if(!bonusActivity&&total>0&&ids.length===total)el.innerHTML+='<p class="reward-stage">✓ Etapă bifată în pașaport!</p>';if(complete&&chapter.diploma)el.innerHTML+=rewardDiplomaOffer(chapter);}
 }
 // Answers start fresh on re-entry; the separate reward record is kept.
 const rewardOldLoad=loadProgress;
@@ -69,8 +70,6 @@ const rewardOldBatchVerify=vocabBatchVerify;
 vocabBatchVerify=function(){rewardOldBatchVerify();const total=document.querySelectorAll('[data-answer]').length;if(total&&rewardGenericIds().length===total){rewardMark(route.join('/'));const el=document.querySelector('#score');if(el)el.innerHTML+='<p class="reward-stage">✓ Etapă bifată în pașaport!</p>';}};
 const rewardOldGapVerify=vocabGapVerify;
 vocabGapVerify=function(){rewardOldGapVerify();if(vocabModel().completed.length>=10){rewardMark('llr/vocab/gaps');const el=document.querySelector('#score');if(el)el.innerHTML+='<p class="reward-stage">✓ 10 propoziții reușite: etapă bifată!</p>';}};
-const rewardOldOppositeVerify=vocabOppositeVerify;
-vocabOppositeVerify=function(){rewardOldOppositeVerify();if(rewardGenericIds().length>=Math.min(10,vocabOppositeEntries().length)){rewardMark('llr/vocab/opposite');const el=document.querySelector('#score');if(el)el.innerHTML+='<p class="reward-stage">✓ Etapă bifată în pașaport!</p>';}};
 const rewardOldOrderVerify=orderVerify;
 orderVerify=function(){rewardOldOrderVerify();const tasks=orderTasks(route[2]),ids=tasks.flatMap((t,i)=>String(state['order-'+i]||'')===t.expected?[String(i)]:[]);rewardAfter(ids,tasks.length,'#order-result','math');};
 const rewardOldUnknownVerify=unknownVerify;
