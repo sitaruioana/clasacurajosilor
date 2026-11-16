@@ -47,6 +47,16 @@ function multPriceQuestion(a,b,level){
  const item=multPriceCatalog(level).find(x=>x[0]===a);if(!item)throw Error('Prețul nu are produs asociat.');
  return `${item[1]} costă ${multQuantity(a,'lei')}. Cât costă ${multQuantity(b,item[2])}?`;
 }
+function multPriceGroup(question,level){
+ const q=question.toLocaleLowerCase('ro-RO');
+ if(q.includes('stb'))return 'stb';
+ if(q.includes('metrou'))return 'metrou';
+ if(q.includes('teatru'))return 'teatru';
+ if(q.includes('concert'))return 'concert';
+ if(level!=='tabla'){const item=multPriceCatalog(level).find(x=>q.startsWith(x[1].toLocaleLowerCase('ro-RO')+' costă'));if(item)return item[1].toLocaleLowerCase('ro-RO');}
+ for(const word of ['acadea','ciocolată','salam de biscuiți','croissant','pufuleți','bilet'])if(q.includes(word))return word;
+ return q;
+}
 function multSituation(a,b,level,kind){
  if(kind==='price')return multPriceQuestion(a,b,level);
  if(kind==='wafer')return `Într-un pachet sunt ${a} napolitane. Câte napolitane sunt în ${b} pachete la fel?`;
@@ -177,7 +187,7 @@ function multBuild(level,game,previous=[]){
   let priceTries=0;
   while(priceCount()<6&&round.length<n&&priceTries++<10000){
    const factors=multFactors(level,game),b=factors[1],catalog=level==='tabla'?null:multPriceCatalog(level),a=catalog?catalog[multRand(0,catalog.length-1)][0]:factors[0],key=a+'x'+b;
-   if(used.has(key))continue;used.add(key);round.push({a,b,answer:a*b,key,question:multSituation(a,b,level,'price'),shown:a*b,wrong:false});
+   if(used.has(key))continue;const question=multSituation(a,b,level,'price'),group=multPriceGroup(question,level);if(round.some(t=>multUnit(t.question)==='lei'&&multPriceGroup(t.question,level)===group))continue;used.add(key);round.push({a,b,answer:a*b,key,question,shown:a*b,wrong:false});
   }
   if(priceCount()<6&&previous.length)return multBuild(level,game,[]);
  }
@@ -185,6 +195,7 @@ function multBuild(level,game,previous=[]){
   const [a,b]=multFactors(level,game),key=a+'x'+b;if(used.has(key))continue;
   const question=game==='situatii'?multSituation(a,b,level):'';
   if(game==='situatii'&&/imprimantă imprimă|centru de copiere|tipografie imprimă/i.test(question)&&round.some(t=>/imprimantă imprimă|centru de copiere|tipografie imprimă/i.test(t.question)))continue;
+  if(game==='situatii'&&multUnit(question)==='lei'&&round.some(t=>multUnit(t.question)==='lei'&&multPriceGroup(t.question,level)===multPriceGroup(question,level)))continue;
   used.add(key);round.push({a,b,answer:a*b,key,question,shown:a*b,wrong:false});
  }
  if(round.length!==n&&previous.length)return multBuild(level,game,[]);
