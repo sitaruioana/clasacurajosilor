@@ -176,16 +176,8 @@ function vocabFlashColors(count){
   }
   return colors.slice(0,count);
 }
-// Alternate the initial face every 14 calendar days in Europe/Bucharest.
-function vocabExplanationFirst(){
-  const days=Math.floor((Date.parse(vocabToday()+'T00:00:00Z')-Date.UTC(2026,9,30))/86400000);
-  return Math.floor(Math.max(0,days)/14)%2===1;
-}
-let vocabLastFrontSide=vocabExplanationFirst();
-window.addEventListener('focus',()=>{
-  const side=vocabExplanationFirst();
-  if(side!==vocabLastFrontSide){vocabLastFrontSide=side;if(route[0]==='llr'&&route[1]==='vocab'&&route[2]==='learn')render();}
-});
+// Flashcardurile pornesc întotdeauna cu fața pe care este cuvântul.
+function vocabExplanationFirst(){return false;}
 function vocabFlip(button,i) {
   const back=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(back));
   const firstExplanation=button.dataset?.firstSide?button.dataset.firstSide==='explanation':vocabExplanationFirst();
