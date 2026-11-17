@@ -346,6 +346,17 @@ window.VOCAB_ADDITIONS = [
     "lesson": "17 noiembrie",
     "addedAt": "2026-11-17T07:00:00+02:00",
     "releaseAt": "2026-11-17T07:00:00+02:00"
+  },
+  {
+    "word": "bondoc",
+    "meaning": "scurt și îndesat",
+    "sentence": "Copăcelul ___ avea un trunchi gros și crengi dese.",
+    "answers": "bondoc",
+    "opposite": "înalt și slab",
+    "bonusSimilar": "scund și plinuț",
+    "bonusRhyme": "busuioc",
+    "lesson": "17 noiembrie",
+    "addedAt": "2026-11-17T10:45:00+02:00",
+    "releaseAt": "2026-11-17T10:45:00+02:00"
   }
 ];
-
