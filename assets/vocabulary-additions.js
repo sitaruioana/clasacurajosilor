@@ -358,5 +358,23 @@ window.VOCAB_ADDITIONS = [
     "lesson": "17 noiembrie",
     "addedAt": "2026-11-17T10:45:00+02:00",
     "releaseAt": "2026-11-17T10:45:00+02:00"
+  },
+  {
+    "word": "climă",
+    "meaning": "vreme",
+    "sentence": "În deșert, ___ este foarte uscată.",
+    "answers": "climă",
+    "lesson": "17 noiembrie",
+    "addedAt": "2026-11-17T10:45:00+02:00",
+    "releaseAt": "2026-11-17T10:45:00+02:00"
+  },
+  {
+    "word": "habitat",
+    "meaning": "locul de trai",
+    "sentence": "Pădurea este un ___ pentru multe animale.",
+    "answers": "habitat",
+    "lesson": "17 noiembrie",
+    "addedAt": "2026-11-17T10:45:00+02:00",
+    "releaseAt": "2026-11-17T10:45:00+02:00"
   }
 ];
