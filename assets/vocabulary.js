@@ -284,7 +284,7 @@ renderVocab = function(level) {
 route=routeFromPath();state=loadProgress();render();
 
 // Install subject extensions before attaching the shared reward system.
-function curajosLoadScript(name){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=SITE_ROOT+'assets/'+name+'.js?v='+(name==='math-intervals'?'20261117-copaci-alarma':name==='new-subjects'?'20261116-manual-online':name==='rewards'?'20261117-introducere':name==='science-data'?'20261116-rebus-poluare':name==='science-lessons'?'20261116-rebus-poluare':name==='multiplication'?'20261116-cutie':name==='math-evaluation'?'20261116-fara-pasaport':name==='orthograms'?'20261116-intruna':name==='ortho-bonus'?'20261116-evaluare':'20261105-calm');s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});}
+function curajosLoadScript(name){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=SITE_ROOT+'assets/'+name+'.js?v='+(name==='math-intervals'?'20261117-copaci-alarma':name==='new-subjects'?'20261116-manual-online':name==='rewards'?'20261117-introducere':name==='science-data'?'20261116-rebus-poluare':name==='science-lessons'?'20261116-rebus-poluare':name==='multiplication'?'20261116-cutie':name==='math-evaluation'?'20261117-23-necunoscute':name==='orthograms'?'20261116-intruna':name==='ortho-bonus'?'20261116-evaluare':'20261105-calm');s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});}
 Promise.all([
  curajosLoadScript('science-data').then(()=>curajosLoadScript('science-lessons')),
  curajosLoadScript('math-order'),
