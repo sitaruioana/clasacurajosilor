@@ -242,7 +242,7 @@ const VOCAB_BONUS = {
   'a făgădui':['a-și da cuvântul','a găzdui'],
   'a consola':['a alina','a decola']
 };
-function vocabOppositeEntries(){const rank=new Map(vocabFlashOrder().map((id,i)=>[id,i]));return VOCAB.map((v,i)=>({v,i,extra:(window.VOCAB_ADDITIONS||[]).find(x=>x.word===v[0])})).filter(x=>x.extra?.bonusContrast||(x.v[2]&&(VOCAB_BONUS[x.v[0]]||x.extra?.bonusSimilar))).sort((a,b)=>Number(!!b.extra?.bonusContrast)-Number(!!a.extra?.bonusContrast)||rank.get(a.i)-rank.get(b.i));}
+function vocabOppositeEntries(){const rank=new Map(vocabFlashOrder().map((id,i)=>[id,i]));return VOCAB.map((v,i)=>({v,i,extra:(window.VOCAB_ADDITIONS||[]).find(x=>x.word===v[0])})).filter(x=>x.extra?.bonusContrast||(x.v[2]&&(VOCAB_BONUS[x.v[0]]||x.extra?.bonusSimilar))).sort((a,b)=>rank.get(a.i)-rank.get(b.i));}
 function vocabOppositeChoices(entry){
   const {v,extra}=entry,meta=VOCAB_BONUS[v[0]];
   if(extra?.bonusContrast){const c=extra.bonusContrast;return {correct:c.correct,similar:c.distractors.slice(0,2),rhyme:c.distractors[2]};}
