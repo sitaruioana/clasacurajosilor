@@ -376,5 +376,30 @@ window.VOCAB_ADDITIONS = [
     "lesson": "17 noiembrie",
     "addedAt": "2026-11-17T10:45:00+02:00",
     "releaseAt": "2026-11-17T10:45:00+02:00"
+  },
+  {
+    "word": "a scorni",
+    "meaning": "a născoci",
+    "sentence": "A ___ o poveste înseamnă a o inventa.",
+    "answers": "scorni",
+    "opposite": "a spune adevărul",
+    "bonusContrast": {"question": "când vorbești despre fapte", "correct": "a spune adevărul", "distractors": ["a născoci", "a inventa", "a porni"]},
+    "bonusSimilar": "a inventa",
+    "bonusRhyme": "a porni",
+    "lesson": "17 noiembrie",
+    "addedAt": "2026-11-17T10:45:00+02:00",
+    "releaseAt": "2026-11-17T10:45:00+02:00"
+  },
+  {
+    "word": "durdulie",
+    "meaning": "rotofeie",
+    "sentence": "O vrăbiuță ___ se odihnea pe ramură.",
+    "answers": "durdulie",
+    "opposite": "slăbuță",
+    "bonusSimilar": "plinuță",
+    "bonusRhyme": "păpădie",
+    "lesson": "17 noiembrie",
+    "addedAt": "2026-11-17T10:45:00+02:00",
+    "releaseAt": "2026-11-17T10:45:00+02:00"
   }
 ];
