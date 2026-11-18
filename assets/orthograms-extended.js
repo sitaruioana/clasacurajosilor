@@ -55,7 +55,7 @@ for(const [type,data] of Object.entries(ORTHO_PRACTICE)){
   return [sentence,answer];
  }):old;
  EXTRA_ORTHO[type].choose=[...data.additional,...revised];
- DATA.ortho[type]=EXTRA_ORTHO[type].choose;
+ DATA.ortho[type]=vocabShuffle(EXTRA_ORTHO[type].choose);
 }
 const orthoExpandedView=view;
 view=function(html){
