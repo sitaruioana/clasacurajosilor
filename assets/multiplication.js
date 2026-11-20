@@ -264,3 +264,5 @@ function distRender(game){
 function distVerify(){const fields=[...document.querySelectorAll('[data-answer]')],ids=[];let rows=0;for(const el of fields){const ok=norm(el.value)===norm(el.dataset.answer);el.classList.toggle('good',ok);el.classList.toggle('bad',!ok);}for(const [i,row] of [...document.querySelectorAll('.task')].entries()){if([...row.querySelectorAll('[data-answer]')].every(el=>norm(el.value)===norm(el.dataset.answer))){rows++;ids.push(String(i));}}const earned=rewardGrant('math',ids);if(rows===10)rewardMark(route.join('/'));document.getElementById('dist-score').innerHTML=`<p class="result">${rows} din 10 exerciții corecte. ${rows===10?'Bravo! 🌟':'Mai încearcă! 🌱'}</p>`+rewardMessage(earned,'math');}
 
 render();
+
+const distOldCrumbs=crumbs;crumbs=function(){return distOldCrumbs().replace('>suma</button>','>Înmulțirea cu o sumă sau o diferență</button>').replace('>completeaza</button>','>Completează casetele</button>').replace('>alege</button>','>Alege desfășurarea</button>').replace('>convenabil</button>','>Calculează convenabil</button>');};render();
