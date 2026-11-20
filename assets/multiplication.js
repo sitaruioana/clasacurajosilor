@@ -237,3 +237,30 @@ const multOldRender=render;render=function(){if(route[0]==='math'&&route[1]==='m
 const multOldRenderPassport=renderPassport;renderPassport=function(){multMigrateProgress();return multOldRenderPassport();};
 multMigrateProgress();
 const multResolved=routeFromPath();if(JSON.stringify(multResolved)!==JSON.stringify(route)){route=multResolved;state=loadProgress();}render();
+
+/* Înmulțirea cu o sumă sau o diferență. */
+const DIST_TITLE='Înmulțirea cu o sumă sau o diferență';
+const DIST_TYPES={completeaza:'Completează casetele',alege:'Alege desfășurarea',convenabil:'Calculează convenabil'};
+rewardChapter('math-distributivitate','math',DIST_TITLE,Object.entries(DIST_TYPES).map(([id,title])=>[title,['math','multiply','suma',id]]));
+const distOldMultRender=multRender;
+multRender=function(level,game){
+ if(level==='suma')return distRender(game);
+ if(!level){const result=distOldMultRender(level,game);const grid=document.querySelector('#app .cards');if(grid){const el=document.createElement('div');el.innerHTML=card('2. '+DIST_TITLE,'Descoperă și exersează',"go('math','multiply','suma')",'2026-11-20T00:00:00+02:00');const btn=el.firstElementChild;grid.insertBefore(btn,grid.children[1]||null);[...grid.children].forEach((node,i)=>{if(node!==btn){const strong=node.querySelector('strong');if(strong)strong.firstChild.textContent=strong.firstChild.textContent.replace(/^\d+\./,(i+1)+'.');}});}return result;}
+ return distOldMultRender(level,game);
+};
+const DIST_ITEMS=[[2,4,5,'+'],[4,7,3,'+'],[5,6,2,'+'],[9,8,3,'−'],[7,9,1,'−'],[6,10,5,'−'],[3,8,2,'+'],[8,6,4,'+'],[5,12,2,'−'],[4,15,5,'−']];
+const DIST_CONV=[[4,7,3,'+'],[6,8,2,'+'],[5,6,4,'+'],[3,12,2,'−'],[8,13,3,'−'],[7,15,5,'−'],[2,16,4,'+'],[4,18,2,'+'],[6,24,4,'−'],[5,37,7,'−']];
+function distInput(id,answer){return input(id,answer,'?').replace('<input ','<input style="width:5em;max-width:100%" inputmode="numeric" ');}
+function distRender(game){
+ const intro='<div class="rule"><b>Reține!</b><br>Poți calcula mai întâi în paranteză: 5 × (4 + 3) = 5 × 7 = 35.<br>Sau poți înmulți fiecare număr din paranteză: 5 × (4 + 3) = 5 × 4 + 5 × 3 = 35.<br>La scădere procedăm la fel: 5 × (4 − 3) = 5 × 4 − 5 × 3 = 5.</div>';
+ if(!DIST_TYPES[game])return view(`<div class="hero"><h2>✖️ ${DIST_TITLE}</h2>${intro}</div><div class="cards">${Object.entries(DIST_TYPES).map(([id,title],i)=>card((i+1)+'. '+title,id==='completeaza'?'Două moduri de calcul':id==='alege'?'Alege varianta potrivită':'Grupează pentru a calcula ușor',`go('math','multiply','suma','${id}')`)).join('')}</div>`);
+ let rows=(game==='convenabil'?DIST_CONV:DIST_ITEMS).map(([a,b,c,op],i)=>{const sum=op==='+'?b+c:b-c,result=a*sum,p=a*b,q=a*c;let body='';
+  if(game==='completeaza')body=`<p>${a} × (${b} ${op} ${c}) = ${a} × ${distInput('d'+i+'a',sum)} = ${distInput('d'+i+'b',result)}</p><p>${a} × (${b} ${op} ${c}) = ${a} × ${b} ${op} ${a} × ${c} = ${distInput('d'+i+'c',p)} ${op} ${distInput('d'+i+'d',q)} = ${distInput('d'+i+'e',result)}</p>`;
+  else if(game==='alege'){const correct=`${a} × ${b} ${op} ${a} × ${c}`;const wrong1=`${a} × ${b} ${op} ${c}`;const wrong2=`${a} × ${b} ${op==='+'?'−':'+'} ${a} × ${c}`;body=`<p>${a} × (${b} ${op} ${c}) = ${result}</p><select class="entry" data-id="d${i}" data-answer="${esc(correct)}" onchange="setval('d${i}',this.value)"><option value="">Alege</option>${vocabShuffle([wrong1,correct,wrong2]).map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('')}</select>`;}
+  else body=`<p>${a} × ${b} ${op} ${a} × ${c} = ${a} × ${distInput('d'+i+'a',sum)} = ${distInput('d'+i+'b',result)}</p>`;
+  return `<div class="task"><b>${i+1}.</b> ${body}</div>`;}).join('');
+ view(`<div class="hero"><h2>${esc(DIST_TYPES[game])}</h2>${intro}</div><div class="panel">${rows}<div class="row"><button class="btn" onclick="distVerify()">✓ Verifică</button></div><div id="dist-score" aria-live="polite"></div></div>`);
+}
+function distVerify(){const fields=[...document.querySelectorAll('[data-answer]')],ids=[];let rows=0;for(const el of fields){const ok=norm(el.value)===norm(el.dataset.answer);el.classList.toggle('good',ok);el.classList.toggle('bad',!ok);}for(const [i,row] of [...document.querySelectorAll('.task')].entries()){if([...row.querySelectorAll('[data-answer]')].every(el=>norm(el.value)===norm(el.dataset.answer))){rows++;ids.push(String(i));}}const earned=rewardGrant('math',ids);if(rows===10)rewardMark(route.join('/'));document.getElementById('dist-score').innerHTML=`<p class="result">${rows} din 10 exerciții corecte. ${rows===10?'Bravo! 🌟':'Mai încearcă! 🌱'}</p>`+rewardMessage(earned,'math');}
+
+render();
