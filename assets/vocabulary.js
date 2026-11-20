@@ -203,10 +203,10 @@ function vocabNextSet() {
 }
 function vocabBatchVerify() {
   const fields=[...document.querySelectorAll('[data-answer]')];let good=0;
-  fields.forEach(el=>{const ok=el.dataset.answer.split('|').map(norm).includes(norm(el.value));good+=Number(ok);el.classList.toggle('good',ok);el.classList.toggle('bad',!ok);});
+  fields.forEach(el=>{const ok=el.dataset.answer.split('|').map(norm).includes(norm(el.value));good+=Number(ok);el.classList.toggle('good',ok);el.classList.toggle('bad',!!el.value.trim()&&!ok);});
   const earned=vocabAward(fields.filter(el=>el.dataset.answer.split('|').map(norm).includes(norm(el.value))).map(el=>Number(el.dataset.id)));
   const done=fields.length>0&&fields.every(el=>el.value.trim());vocabModel().verified=done;saveProgress();
-  $('#score').innerHTML=`<div class="result">${good} din ${fields.length} răspunsuri corecte. ${good===fields.length?'Bravo! 🌟':done?'Poți corecta răspunsurile sau poți continua cu un alt set.':'Completează toate răspunsurile înainte să ceri alt set.'}</div>`+vocabRewardMessage(earned);
+  $('#score').innerHTML=`<div class="result">${fields.filter(el=>el.value.trim()).length?'Răspunsuri completate: '+fields.filter(el=>el.value.trim()).length+'. Corecte: '+good+'.':'Completează un răspuns și verifică.'} ${good===fields.length?'Bravo! 🌟':done?'Poți corecta răspunsurile sau poți continua cu un alt set.':''}</div>`+vocabRewardMessage(earned);
   $('#vocab-next-set').disabled=!done;
 }
 function vocabGapVerify() {
@@ -262,8 +262,8 @@ function vocabOppositeChoices(entry){
 function vocabPickOpposite(i,value){vocabSetval('op'+i,value);renderVocab('opposite');}
 function vocabOppositeVerify(){
   let good=0,ids=[];const fields=[...document.querySelectorAll('[data-answer]')];
-  for(const field of fields){const ok=norm(field.value)===norm(field.dataset.answer);field.classList.toggle('good',ok);field.classList.toggle('bad',!ok);if(ok){good++;ids.push(Number(field.dataset.wordIndex));}}
-  const earned=vocabAward(ids);$('#score').innerHTML=`<div class="result">${good} din ${fields.length} răspunsuri corecte. ${good===fields.length?'Bravo! 🌟':'Mai încearcă! 🌱'}</div>`+vocabRewardMessage(earned);
+  for(const field of fields){const ok=norm(field.value)===norm(field.dataset.answer);field.classList.toggle('good',ok);field.classList.toggle('bad',!!field.value.trim()&&!ok);if(ok){good++;ids.push(Number(field.dataset.wordIndex));}}
+  const earned=vocabAward(ids);$('#score').innerHTML=`<div class="result">${fields.filter(el=>el.value.trim()).length?'Răspunsuri completate: '+fields.filter(el=>el.value.trim()).length+'. Corecte: '+good+'.':'Completează un răspuns și verifică.'} ${good===fields.length?'Bravo! 🌟':''}</div>`+vocabRewardMessage(earned);
 }
 function vocabRenderOpposite(){
   const m=vocabModel(),entries=vocabOppositeEntries();
@@ -278,7 +278,7 @@ function vocabRenderOpposite(){
 }
 renderVocab = function(level) {
   vocabApplyReleases();
-  if(!level)return view(`<div class="hero"><h2>🌱 Vocabular</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p><div class="rule"><b>REȚINE!</b> Cuvintele cu sens asemănător exprimă idei apropiate. Cuvintele cu sens opus exprimă idei contrare.</div></div><div class="cards vocab-activities">${card('1. 📖 Învață – Flashcarduri','Toate cuvintele, mereu la îndemână','go("llr","vocab","learn")')}${card('2. 🧩 Găsește perechea','10 cuvinte în fiecare rundă','go("llr","vocab","match")')}${card('3. ✏️ Scrie cuvinte cu sens asemănător','Seturi de 10 cuvinte și indicii dacă ai nevoie :)','go("llr","vocab","similar")')}${card('4. 💬 Completează propozițiile','Propoziții pe rând, în ritmul tău','go("llr","vocab","gaps")')}${card('5. ⭐ Cuvinte cu sens opus','Descoperă contrariile','go("llr","vocab","opposite")')}</div>`);
+  if(!level)return view(`<div class="hero"><h2>🌱 Vocabular</h2><p>🌟 ${VOCAB.length} de cuvinte în lucru!</p><div class="rule"><b>REȚINE!</b> Cuvintele cu sens asemănător exprimă idei apropiate. Cuvintele cu sens opus exprimă idei contrare.</div></div><div class="cards vocab-activities">${card('1. 📖 Învață – Flashcarduri','Toate cuvintele, mereu la îndemână','go("llr","vocab","learn")')}${card('2. 🧩 Găsește perechea','10 cuvinte în fiecare rundă','go("llr","vocab","match")')}${card('3. ✏️ Scrie cuvinte cu sens asemănător','Seturi de 10 cuvinte și indicii dacă ai nevoie :)','go("llr","vocab","similar")')}${card('4. 💬 Completează propozițiile','Serii de 5 propoziții, cu indicii','go("llr","vocab","gaps")')}${card('5. ⭐ Cuvinte cu sens opus','Descoperă contrariile','go("llr","vocab","opposite")')}</div>`);
   if(level==='learn'){
     const ids=vocabFlashOrder();
     const colors=vocabFlashColors(ids.length),firstExplanation=vocabExplanationFirst();
@@ -291,6 +291,18 @@ renderVocab = function(level) {
   const body=(level==='similar'?`<div class="rule"><b>Lista de cuvinte:</b><div class="vocab-bank">${options.map(o=>`<span>${esc(o)}</span>`).join('')}</div></div>`:'')+ids.map((i,j)=>`<div class="task"><label><b>${j+1}. ${esc(VOCAB[i][0])}</b> → ${level==='match'?`<select class="entry" style="width:260px;max-width:100%" aria-label="Sensul cuvântului ${esc(VOCAB[i][0])}" data-answer="${esc(VOCAB[i][1])}" data-id="${i}" onchange="vocabSetval('${i}',this.value)"><option value="">Alege perechea</option>${options.map(o=>`<option value="${esc(o)}" ${val(i)===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`:vocabEntry(i,VOCAB[i][1])}</label>${level==='similar'?` <button class="btn alt" onclick="vocabSimilarHelp(${i})">💡 Indiciu</button><div class="hint" id="vsh${i}" hidden></div>`:''}</div>`).join('');
   view(`<div class="hero"><h2>${level==='match'?'🧩 Găsește perechea':'✏️ Scrie cuvinte cu sens asemănător'}</h2><p>${level==='match'?'Găsește perechile! 🌟':'Scrie perechile! 💡 Indiciul te ajută.'}</p><p class="vocab-progress">Runda ${m.round} · ${ids.length} cuvinte</p></div><div class="panel">${body}<div class="row"><button class="btn" onclick="vocabBatchVerify()">✓ Verifică</button><button class="btn alt" onclick="vocabRepeatRound()">↺ Repetă runda</button></div><div id="score" aria-live="polite"></div><button id="vocab-next-set" class="btn pink" onclick="vocabNextSet()" ${m.verified?'':'disabled'}>Încă o rundă! →</button></div>`);
 };
+/* Câte cinci propoziții, cu indicii și cu oprire oricând. */
+vocabRenderGaps=function(){const m=vocabModel(),all=VOCAB_GAPS.map((_,i)=>i).filter(i=>VOCAB_GAPS[i]);
+ if(m.finished||m.completed.length>=all.length){const count=m.completed.length;return view(`<div class="hero"><h2>🌟 Bravo pentru perseverență!</h2><p class="vocab-end">Ai completat corect <b>${count} ${count===1?'propoziție':'propoziții'}</b>!</p><button class="btn" onclick="vocabRestartGaps()">Încep o rundă nouă</button><button class="btn alt" onclick="go('llr','vocab')">Înapoi la vocabular</button></div>`);}
+ if(!Array.isArray(m.gapBatch)||!m.gapBatch.length){const left=all.filter(i=>!m.completed.includes(i)),fresh=left.filter(i=>!(m.gapSeen||[]).includes(i));m.gapBatch=[...vocabWeightedOrder(fresh),...vocabWeightedOrder(left.filter(i=>!fresh.includes(i)))].slice(0,5);m.gapSeen=[...new Set([...(m.gapSeen||[]),...m.gapBatch])];m.gapBatch.forEach(i=>delete state[key(i)]);m.awardToken=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);m.verified=false;saveProgress();}
+ const rows=m.gapBatch.map((i,j)=>{const [q,a]=VOCAB_GAPS[i];return `<div class="task"><p class="vocab-sentence"><b>${j+1}.</b> ${esc(q)}</p>${vocabEntry(i,a)} <button class="btn alt" onclick="vocabHelp(${i})">💡 Ajutor</button><div id="vh${i}"></div></div>`;}).join('');
+ view(`<div class="hero"><h2>💬 Completează propozițiile</h2><p>Scrie cuvântul lipsă. Indiciile te ajută! 💡</p><p id="vocab-completed" class="vocab-progress">${vocabSentenceCount(m.completed.length)}</p></div><div class="panel">${rows}<div class="row"><button class="btn" onclick="vocabGapVerify()">✓ Verifică</button><button id="vocab-next-gap" class="btn" onclick="vocabNextGap()" ${m.verified?'':'disabled'}>Încă 5 propoziții →</button><button class="btn alt" onclick="vocabStop()">Mă opresc aici</button></div><div id="score" aria-live="polite"></div></div>`);
+};
+vocabGapVerify=function(){const m=vocabModel(),fields=[...document.querySelectorAll('[data-answer]')],correct=[],filled=fields.filter(el=>el.value.trim());for(const el of fields){const value=norm(el.value),ok=!!value&&el.dataset.answer.split('|').map(norm).includes(value);el.classList.toggle('good',ok);el.classList.toggle('bad',!!value&&!ok);if(ok){let i=Number(el.dataset.id);correct.push(i);if(!m.completed.includes(i))m.completed.push(i);}}const earned=vocabAward(correct);m.verified=fields.length>0&&filled.length===fields.length;saveProgress();const counter=$('#vocab-completed');if(counter)counter.textContent=vocabSentenceCount(m.completed.length);$('#score').innerHTML=`<div class="result">${filled.length?'Răspunsuri completate: '+filled.length+'. Corecte: '+correct.length+'.':'Completează un răspuns și verifică.'} ${m.verified?'Poți continua cu o altă serie.':''}</div>`+vocabRewardMessage(earned);$('#vocab-next-gap').disabled=!m.verified;};
+vocabNextGap=function(){const m=vocabModel();if(!m.verified)return;m.gapBatch.forEach(i=>delete state[key(i)]);m.gapBatch=[];m.verified=false;saveProgress();render();window.scrollTo(0,0);};
+const vocabGapOriginalSet=vocabSetval;
+vocabSetval=function(id,value){vocabGapOriginalSet(id,value);if(route[0]==='llr'&&route[1]==='vocab'&&route[2]==='gaps'){const next=$('#vocab-next-gap');if(next)next.disabled=true;}};
+
 // The new route is registered before resolving a direct flashcard link.
 route=routeFromPath();state=loadProgress();render();
 
