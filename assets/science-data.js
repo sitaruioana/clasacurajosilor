@@ -823,7 +823,7 @@ window.SCIENCE_LESSONS = {
   "pollution": {
     "crossword": [["Ce se ridică dintr-un incendiu și poate polua aerul?","FUM",2],["Cum numim lucrurile aruncate, pe care le putem sorta pentru reciclare?","DEȘEURI",1],["Loc cu mulți copaci, pe care îl protejăm de tăieri și incendii.","PĂDURE",2],["Cum se numește transformarea deșeurilor în materiale care pot fi refolosite?","RECICLARE",3],["Stratul de pământ în care cresc plantele poate fi poluat de gunoaie. Cum se numește?","SOLUL",3]],
     "crosswordSecret": "MEDIU",
-    "title": "Poluarea apei, a aerului și a solului. Influența pozitivă a omului asupra mediului",
+    "title": "Poluarea apei, a aerului și a solului",
     "intro": "Protejăm mediul prin alegerile noastre",
     "sections": [
       "crossword",
@@ -1177,3 +1177,230 @@ const LIFE_LESSONS={
 };
 for(const [id,l] of Object.entries(LIFE_LESSONS)){SCIENCE_LESSONS[id]={title:l.title,intro:'Învață și exersează despre lumea vie',sections:['gaps','choice','tf','crossword'],gaps:l.gaps,bank:l.gaps.flatMap(x=>x[1].split('|').slice(0,1)),choice:l.choice.map(([q,answers])=>[q,answers,0,answers[0]]),tf:l.tf.map(([q,a])=>[q,a,a?'Enunțul este adevărat.':'Enunțul este fals.']),crossword:l.cross,crosswordSecret:l.secret};}
 
+
+SCIENCE_LESSONS.protectie = {
+  "title": "Influența pozitivă a omului asupra mediului",
+  "intro": "Descoperă cum putem proteja natura în fiecare zi",
+  "sections": [
+    "gaps",
+    "choice",
+    "tf",
+    "crossword"
+  ],
+  "gaps": [
+    [
+      "Când folosim mai puține lucruri și evităm risipa, alegem să ___.",
+      "reducem"
+    ],
+    [
+      "Când folosim din nou un obiect, alegem să îl ___.",
+      "reutilizăm"
+    ],
+    [
+      "Transformarea deșeurilor în materiale folositoare se numește ___.",
+      "reciclare"
+    ],
+    [
+      "Sortăm deșeurile pentru a putea fi ___.",
+      "reciclate"
+    ],
+    [
+      "Închidem robinetul când nu folosim ___.",
+      "apa"
+    ],
+    [
+      "Stingem lumina când nu avem nevoie de ___.",
+      "ea|lumină"
+    ],
+    [
+      "Plantarea copacilor ajută la protejarea ___.",
+      "mediului|naturii"
+    ],
+    [
+      "O pungă de pânză poate fi folosită de mai multe ___.",
+      "ori"
+    ],
+    [
+      "Ducem bateriile uzate la puncte de ___.",
+      "colectare"
+    ],
+    [
+      "Un habitat curat ajută plantele și ___.",
+      "animalele"
+    ]
+  ],
+  "bank": [
+    "reducem",
+    "reutilizăm",
+    "reciclare",
+    "reciclate",
+    "apa",
+    "lumină",
+    "mediului",
+    "ori",
+    "colectare",
+    "animalele"
+  ],
+  "choice": [
+    [
+      "Cum reduci cantitatea de deșeuri?",
+      [
+        "Folosesc o sticlă reutilizabilă",
+        "Cumpăr mereu sticle de unică folosință",
+        "Arunc sticlele în râu"
+      ],
+      0,
+      "Un recipient reutilizabil poate fi folosit de mai multe ori."
+    ],
+    [
+      "Care este un exemplu de reutilizare?",
+      [
+        "Refolosesc o cutie pentru creioane",
+        "Arunc cutia după o singură folosire",
+        "Dau foc cutiei"
+      ],
+      0,
+      "O cutie curată poate primi o nouă întrebuințare."
+    ],
+    [
+      "Ce facem cu hârtia folosită care poate fi reciclată?",
+      [
+        "O sortăm la colectarea hârtiei",
+        "O aruncăm în pădure",
+        "O punem în apă"
+      ],
+      0,
+      "Hârtia se sortează conform regulilor locale."
+    ],
+    [
+      "Cum economisim apă?",
+      [
+        "Închidem robinetul când ne spălăm pe dinți",
+        "Lăsăm robinetul deschis tot timpul",
+        "Aruncăm deșeuri în apă"
+      ],
+      0,
+      "Închiderea robinetului reduce risipa de apă."
+    ],
+    [
+      "Ce facem cu o baterie uzată?",
+      [
+        "O ducem la un punct de colectare pentru baterii",
+        "O lăsăm în natură",
+        "O aruncăm în râu"
+      ],
+      0,
+      "Bateriile se colectează separat."
+    ],
+    [
+      "Ce ajută la protejarea aerului?",
+      [
+        "Mergem pe jos când se poate",
+        "Ardem gunoaie",
+        "Lăsăm mașina pornită fără rost"
+      ],
+      0,
+      "Mersul pe jos evită gazele produse de o călătorie cu mașina."
+    ],
+    [
+      "Cum avem grijă de spațiile verzi?",
+      [
+        "Plantăm și îngrijim copaci",
+        "Rupem ramurile",
+        "Aruncăm gunoaie lângă copaci"
+      ],
+      0,
+      "Plantele au nevoie de îngrijire."
+    ],
+    [
+      "Ce putem face înainte să aruncăm o jucărie încă bună?",
+      [
+        "O donăm sau o dăruim",
+        "O lăsăm pe malul apei",
+        "O distrugem"
+      ],
+      0,
+      "O jucărie în stare bună poate fi folosită de alt copil."
+    ]
+  ],
+  "tf": [
+    [
+      "Reutilizarea înseamnă folosirea din nou a unui obiect.",
+      true,
+      "Un borcan curat poate fi refolosit."
+    ],
+    [
+      "Reciclarea înseamnă aruncarea deșeurilor în râu.",
+      false,
+      "Deșeurile se sortează și se predau pentru reciclare."
+    ],
+    [
+      "Putem reduce risipa folosind doar ceea ce ne trebuie.",
+      true,
+      "Reducerea înseamnă să consumăm mai puțin."
+    ],
+    [
+      "Bateriile uzate se duc la puncte de colectare.",
+      true,
+      "Bateriile se colectează separat."
+    ],
+    [
+      "Arderea gunoaielor ajută la păstrarea aerului curat.",
+      false,
+      "Fumul poate polua aerul."
+    ],
+    [
+      "Închiderea robinetului ajută la economisirea apei.",
+      true,
+      "Astfel evităm risipa de apă."
+    ],
+    [
+      "Putem refolosi o pungă de pânză.",
+      true,
+      "O pungă rezistentă poate fi utilizată de multe ori."
+    ],
+    [
+      "Plantele și animalele au nevoie de un habitat curat.",
+      true,
+      "Protejarea mediului ajută viețuitoarele."
+    ]
+  ],
+  "crossword": [
+    [
+      "Folosirea din nou a unui obiect",
+      "REUTILIZARE",
+      0
+    ],
+    [
+      "Lucruri aruncate, care pot fi sortate",
+      "DEȘEURI",
+      1
+    ],
+    [
+      "Transformarea deșeurilor în materiale folositoare",
+      "RECICLARE",
+      2
+    ],
+    [
+      "Material din care sunt făcute multe caiete",
+      "HÂRTIE",
+      4
+    ],
+    [
+      "Îi putem planta și îngriji în spațiile verzi",
+      "COPACI",
+      0
+    ],
+    [
+      "Material din care sunt făcute multe borcane",
+      "STICLĂ",
+      4
+    ],
+    [
+      "O economisim când închidem robinetul",
+      "APĂ",
+      0
+    ]
+  ],
+  "crosswordSecret": "RECICLĂ"
+};
