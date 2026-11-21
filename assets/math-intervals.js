@@ -59,9 +59,9 @@ function siteMapRender(){
  const intervals=siteMapGroup('🧩 Probleme cu intervale',['math','intervale'],Object.entries(INTERVAL_GROUPS).map(([id,title])=>siteMapLink(title,['math','intervale',id])).join(''));
  const numer=siteMapGroup('🔎 Detectivii numerelor',['math','numer'],rewardNumerTitles.map((title,i)=>`<button type="button" onclick="siteMapNumer(${i})">${esc((i+1)+'. '+title)}</button>`).join(''));
  const math=multiply+simple+unknown+oreo+evaluation+intervals+numer;
- const lessons=Object.entries(SCIENCE_LESSONS).map(([id,l],index)=>siteMapGroup((index+1)+'. '+l.title,['science','lessons',id],[['📖 Învățăm','invata'],...l.sections.map(p=>[scienceActivities[p][0],p])].map(([name,part])=>siteMapLink(name,['science','lessons',id,part])).join(''))).reverse().join('');
+ const earthIds=['sources','states','cycle','weather','pollution'],lifeIds=['nevoi','plante','animale','insecte','reptile','mamifere','crestere'];const lessonMap=(ids,reverse=false)=>{let list=ids.map((id,index)=>{const l=SCIENCE_LESSONS[id];return siteMapGroup((index+1)+'. '+l.title,['science','lessons',id],[['📖 Învățăm','invata'],...l.sections.map(p=>[scienceActivities[p][0],p])].map(([name,part])=>siteMapLink(name,['science','lessons',id,part])).join(''));});return (reverse?list.reverse():list).join('');};
  const experiments=SCIENCE.map((e,i)=>siteMapLink((i+1)+'. '+e.title,['science',String(i)])).join('');
- const science=siteMapGroup('📘 Lecții',['science','lessons'],lessons)+siteMapGroup('🔬 Experimente',['science','experiments'],experiments);
+ const science=siteMapGroup('📘 Lecții',['science','lessons'],siteMapGroup('🌱 Științele vieții',['science','lessons','life'],lessonMap(lifeIds))+siteMapGroup('🌍 Științele Pământului',['science','lessons','earth'],lessonMap(earthIds,true)))+siteMapGroup('🔬 Experimente',['science','experiments'],experiments);
  const civic=Object.entries(CIVIC_DATA).map(([id,item],i)=>siteMapLink((i+1)+'. '+item.icon+' '+item.title,['civic',id])).join('');
  return siteMapGroup('📚 Limba și literatura română',['llr'],llr)+siteMapGroup('🔢 Matematică',['math'],math)+siteMapGroup('🔬 Științe ale naturii',['science'],science)+siteMapGroup('🤝 Educație civică',['civic'],civic)+`<a href="https://manuale.edu.ro/manuale/Clasa%20a%20III-a/Arte%20vizuale%20si%20abilitati%20practice/Uy5DLiBBUlQgS0xFVFQg/">🎨 Arte – manualul digital</a>`;
 }

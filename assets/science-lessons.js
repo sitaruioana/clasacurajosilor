@@ -2,10 +2,10 @@
 const scienceOriginalRenderer=renderScience;
 SCIENCE[0].title='Aerul cald, aerul rece';
 const scienceOriginalCrumbs=crumbs;
-crumbs=function(){return scienceOriginalCrumbs().replace(/>lessons<\/button>/g,'>Lecții</button>').replace(/>experiments<\/button>/g,'>Experimente</button>').replace(/>sources<\/button>/g,'>Surse de apă</button>').replace(/>states<\/button>/g,'>Stările de agregare</button>').replace(/>cycle<\/button>/g,'>Circuitul apei</button>').replace(/>weather<\/button>/g,'>Fenomene ale naturii</button>').replace(/>pollution<\/button>/g,'>Poluare și protejarea mediului</button>').replace(/>invata<\/button>/g,'>Învățăm</button>').replace(/>text<\/button>/g,'>Text lacunar</button>').replace(/>crossword<\/button>/g,'>Rebus</button>').replace(/>tf<\/button>/g,'>Adevărat sau fals</button>').replace(/>gaps<\/button>/g,'>Completează</button>').replace(/>match<\/button>/g,'>Asociază</button>').replace(/>choice<\/button>/g,'>Alege</button>');};
+crumbs=function(){return scienceOriginalCrumbs().replace(/>lessons<\/button>/g,'>Lecții</button>').replace(/>earth<\/button>/g,'>Științele Pământului</button>').replace(/>life<\/button>/g,'>Științele vieții</button>').replace(/>experiments<\/button>/g,'>Experimente</button>').replace(/>sources<\/button>/g,'>Surse de apă</button>').replace(/>states<\/button>/g,'>Stările de agregare</button>').replace(/>cycle<\/button>/g,'>Circuitul apei</button>').replace(/>weather<\/button>/g,'>Fenomene ale naturii</button>').replace(/>pollution<\/button>/g,'>Poluare și protejarea mediului</button>').replace(/>invata<\/button>/g,'>Învățăm</button>').replace(/>text<\/button>/g,'>Text lacunar</button>').replace(/>crossword<\/button>/g,'>Rebus</button>').replace(/>tf<\/button>/g,'>Adevărat sau fals</button>').replace(/>gaps<\/button>/g,'>Completează</button>').replace(/>match<\/button>/g,'>Asociază</button>').replace(/>choice<\/button>/g,'>Alege</button>');};
 FRIENDLY_ROUTES['stiinte/lectii']=['science','lessons'];
 FRIENDLY_ROUTES['stiinte/experimente']=['science','experiments'];
-const scienceSlugs={sources:'surse-de-apa',states:'starile-de-agregare',cycle:'circuitul-apei-in-natura',weather:'fenomene-ale-naturii',pollution:'poluarea-si-protejarea-mediului'};
+const scienceSlugs={sources:'surse-de-apa',states:'starile-de-agregare',cycle:'circuitul-apei-in-natura',weather:'fenomene-ale-naturii',pollution:'poluarea-si-protejarea-mediului',nevoi:'stiintele-vietii/nevoi-de-baza',plante:'stiintele-vietii/aparare-adaptare-plante',animale:'stiintele-vietii/aparare-adaptare-animale',insecte:'stiintele-vietii/insecte-pesti-amfibieni',reptile:'stiintele-vietii/reptile-pasari',mamifere:'stiintele-vietii/mamifere',crestere:'stiintele-vietii/cresterea-plantelor'};
 const SCIENCE_LEARN={
  sources:[
  ['💧','Apa înseamnă viață','Apa este vitală pentru plante, animale și oameni.'],
@@ -52,6 +52,10 @@ const SCIENCE_LEARN={
  ['♻️','Ce putem face?','Punem deșeurile în locuri amenajate, le sortăm pentru reciclare și îngrijim copacii și spațiile verzi.']
  ]
 };
+for(const [id,l] of Object.entries(LIFE_LESSONS))SCIENCE_LEARN[id]=l.learn;
+const lifeOriginalCrumbs=crumbs;crumbs=function(){let result=lifeOriginalCrumbs();for(const [id,l] of Object.entries(LIFE_LESSONS))result=result.replace('>'+id+'</button>','>'+esc(l.title)+'</button>');return result;};
+FRIENDLY_ROUTES['stiinte/lectii/stiintele-pamantului']=['science','lessons','earth'];
+FRIENDLY_ROUTES['stiinte/lectii/stiintele-vietii']=['science','lessons','life'];
 const scienceActivities={text:['📝 Text lacunar','Completează textul lecției'],crossword:['🧩 Rebus','Descoperă cuvântul de pe verticală'],gaps:['📝 Completează','16 propoziții de completat'],match:['🔗 Asociază','12 situații și explicațiile lor'],choice:['🎯 Alege răspunsul','12 întrebări cu variante'],tf:['✅ Adevărat sau fals','Alege A sau F']};
 for(const [id,slug] of Object.entries(scienceSlugs)){
  FRIENDLY_ROUTES['stiinte/lectii/'+slug]=['science','lessons',id];
@@ -93,7 +97,7 @@ function scienceRebus(data){
  const central=Math.max(...data.map(row=>row[2])),width=Math.max(...data.map(row=>central-row[2]+Array.from(row[1]).length));
  const rows=data.map(([q,a,index],i)=>{const chars=Array.from(norm(a).toUpperCase()),start=central-index,value=Array.from(norm(scienceLessonVal('cross-'+i)).toUpperCase());return Array.from({length:width},(_,c)=>c>=start&&c<start+chars.length?`<span id="science-cell-${i}-${c-start}" class="letter ${c===central?'central':''}">${esc(value[c-start]||'')}</span>`:'<span aria-hidden="true"></span>').join('');}).join('');
  const clues=data.map(([q,a],i)=>scienceTask(`<label for="science-cross-${i}"><b>${i+1}.</b> ${esc(q)} (${Array.from(a).length} litere)</label><input id="science-cross-${i}" class="entry" maxlength="${Array.from(a).length}" value="${esc(scienceLessonVal('cross-'+i))}" autocomplete="off" oninput="scienceLessonSet('cross-${i}',this.value);scienceCrossUpdate(${i},this.value)">`,a,String(i),'',a)).join('');
- return `<p>Completează răspunsurile. Literele din coloana galbenă formează un cuvânt!</p><div class="science-rebus" role="img" aria-label="Rebus cu cinci rânduri; coloana galbenă formează cuvântul ascuns"><div class="science-rebus-grid" style="--science-rebus-width:${width}">${rows}</div></div>${clues}`;
+ return `<p>Completează răspunsurile. Literele din coloana galbenă formează un cuvânt!</p><div class="science-rebus" role="img" aria-label="Rebus cu ${data.length} rânduri; coloana galbenă formează cuvântul ascuns"><div class="science-rebus-grid" style="--science-rebus-width:${width}">${rows}</div></div>${clues}`;
 }
 function scienceCrossUpdate(row,value){const answer=SCIENCE_LESSONS[route[2]].crossword[row][1];const letters=Array.from(norm(value).toUpperCase());for(let i=0;i<Array.from(answer).length;i++){const el=document.getElementById('science-cell-'+row+'-'+i);if(el)el.textContent=letters[i]||'';}}
 function scienceLessonVerify(){
@@ -123,7 +127,7 @@ function scienceLessonRender(id,part){
 }
 renderScience=function(id){
  if(id===undefined)return view(`<div class="hero"><h2>🔬 Științe ale naturii</h2><p>Învață, exersează și descoperă!</p></div><div class="cards">${card('📘 Lecții','Exerciții și jocuri pentru recapitulare',"go('science','lessons')")}${card('🔬 Experimente','Micul laborator de științe',"go('science','experiments')")}</div>`);
- if(id==='lessons'){if(route[2])return scienceLessonRender(route[2],route[3]);return view(scienceLessonNav()+`<div class="hero"><h2>📘 Lecții</h2><p>Alege ce vrei să exersezi.</p></div><div class="cards">${Object.entries(SCIENCE_LESSONS).map(([id,l],i)=>({id,l,number:i+1})).reverse().map(({id,l,number})=>card(number+'. '+({sources:'🌊',states:'🧊',cycle:'💧',weather:'🌦️',pollution:'🌱'}[id]||'🔬')+' '+l.title,l.intro,`go('science','lessons','${id}')`,['weather','pollution'].includes(id)?'2026-11-12T00:00:00+02:00':undefined)).join('')}</div>`);}
+ if(id==='lessons'){const group=route[2],earth=['sources','states','cycle','weather','pollution'],life=['nevoi','plante','animale','insecte','reptile','mamifere','crestere'];if(group==='earth'||group==='life'){const ids=group==='earth'?[...earth].reverse():life;return view(scienceLessonNav()+`<div class="hero"><h2>${group==='earth'?'🌍 Științele Pământului':'🌱 Științele vieții'}</h2><p>Alege lecția!</p></div><div class="cards">${ids.map((key,i)=>{const l=SCIENCE_LESSONS[key],number=group==='earth'?earth.indexOf(key)+1:i+1,icon=group==='life'?LIFE_LESSONS[key].icon:({sources:'🌊',states:'🧊',cycle:'💧',weather:'🌦️',pollution:'🌱'}[key]||'🔬');return card(number+'. '+icon+' '+l.title,l.intro,`go('science','lessons','${key}')`,group==='life'?'2026-11-21T00:00:00+02:00':undefined);}).join('')}</div>`);}if(group)return scienceLessonRender(group,route[3]);return view(scienceLessonNav()+`<div class="hero"><h2>📘 Lecții</h2><p>Alege ce vrei să descoperi.</p></div><div class="cards">${card('🌱 Științele vieții','Plante, animale și nevoile lor',"go('science','lessons','life')",'2026-11-21T00:00:00+02:00')}${card('🌍 Științele Pământului','Apa, fenomenele naturii și mediul',"go('science','lessons','earth')")}</div>`);}
  if(id==='experiments'){scienceOriginalRenderer();return;}
  return scienceOriginalRenderer(id);
 };
