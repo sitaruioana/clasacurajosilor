@@ -55,10 +55,9 @@ const SCIENCE_LEARN={
 SCIENCE_LEARN.protectie=[
  ['♻️','Reducem','Folosim doar cât avem nevoie și evităm risipa. Putem alege o sticlă care se umple din nou.'],
  ['🧺','Reutilizăm','Alegem obiecte care pot fi refolosite: o pungă de pânză, un borcan curat sau o cutie pentru creioane. Putem dona sau dărui lucrurile încă bune.'],
- ['🗂️','Reciclăm','Sortăm hârtia, plasticul, metalul și sticla conform regulilor de colectare. Din materialele colectate se pot face produse noi.'],
+ ['🗂️','Reciclăm','Sortăm gunoiul conform regulilor de colectare. Din materialele colectate se pot face produse noi. Ducem uleiul, bateriile sau becurile uzate la puncte de colectare. Cerem ajutorul unui adult când avem de aruncat deșeuri speciale.'],
  ['💧','Economisim apa și energia','Închidem robinetul când nu folosim apa și stingem lumina când nu avem nevoie de ea.'],
  ['🌳','Îngrijim natura','Plantăm și îngrijim copaci, păstrăm curate spațiile verzi și protejăm habitatul plantelor și animalelor.'],
- ['🔋','Colectăm separat','Ducem bateriile uzate la punctele de colectare. Cerem ajutorul unui adult când avem de aruncat deșeuri speciale.'],
  ['🚶','Avem grijă de aer','Mergem pe jos sau cu bicicleta când este posibil și nu ardem deșeuri.']
 ];
 for(const [id,l] of Object.entries(LIFE_LESSONS))SCIENCE_LEARN[id]=l.learn;
