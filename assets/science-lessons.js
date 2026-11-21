@@ -54,7 +54,7 @@ const SCIENCE_LEARN={
 };
 SCIENCE_LEARN.protectie=[
  ['♻️','Reducem','Folosim doar cât avem nevoie și evităm risipa. Putem alege o sticlă care se umple din nou.'],
- ['🧺','Reutilizăm','Folosim din nou obiectele: o pungă de pânză, un borcan curat sau o cutie pentru creioane. Putem dărui lucrurile încă bune.'],
+ ['🧺','Reutilizăm','Alegem obiecte care pot fi refolosite: o pungă de pânză, un borcan curat sau o cutie pentru creioane. Putem dona sau dărui lucrurile încă bune.'],
  ['🗂️','Reciclăm','Sortăm hârtia, plasticul, metalul și sticla conform regulilor de colectare. Din materialele colectate se pot face produse noi.'],
  ['💧','Economisim apa și energia','Închidem robinetul când nu folosim apa și stingem lumina când nu avem nevoie de ea.'],
  ['🌳','Îngrijim natura','Plantăm și îngrijim copaci, păstrăm curate spațiile verzi și protejăm habitatul plantelor și animalelor.'],
