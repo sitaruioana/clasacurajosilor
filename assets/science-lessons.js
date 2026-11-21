@@ -58,7 +58,7 @@ SCIENCE_LEARN.protectie=[
  ['🗂️','Reciclăm','Sortăm gunoiul conform regulilor de colectare. Din materialele colectate se pot face produse noi. Ducem uleiul, bateriile sau becurile uzate la puncte de colectare. Cerem ajutorul unui adult când avem de aruncat deșeuri speciale.'],
  ['💧','Economisim apa și energia','Închidem robinetul când nu folosim apa și stingem lumina când nu avem nevoie de ea.'],
  ['🌳','Îngrijim natura','Plantăm și îngrijim copaci, păstrăm curate spațiile verzi și protejăm habitatul plantelor și animalelor.'],
- ['🚶','Avem grijă de aer','Mergem pe jos sau cu bicicleta când este posibil și nu ardem deșeuri.']
+ ['🚴‍♀️','Avem grijă de aer','Când este posibil folosim mijloace de transport în comun, mergem pe jos sau cu bicicleta și nu ardem deșeuri.']
 ];
 for(const [id,l] of Object.entries(LIFE_LESSONS))SCIENCE_LEARN[id]=l.learn;
 const lifeOriginalCrumbs=crumbs;crumbs=function(){let result=lifeOriginalCrumbs();for(const [id,l] of Object.entries(LIFE_LESSONS))result=result.replace('>'+id+'</button>','>'+esc(l.title)+'</button>');return result;};
