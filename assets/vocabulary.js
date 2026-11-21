@@ -56,7 +56,7 @@ function activityCardTitle(title){
     if(/^\d+\./.test(String(title)))return String(title);
     const index=Object.values(orthoNames).indexOf(String(title));if(index>=0)return (index+1)+'. '+title;
   }
-  if((route[0]==='science'&&route[1]==='lessons'&&!route[2])||route[0]==='math'||(route[0]==='science'&&route[1]==='experiments'))return String(title).trim();
+  if((route[0]==='science'&&route[1]==='lessons'&&(!route[2]||route[2]==='earth'||route[2]==='life'))||route[0]==='math'||(route[0]==='science'&&route[1]==='experiments'))return String(title).trim();
   const text=String(title).replace(/^\d+\.\s*/, '').trim();
   if(/^\p{Extended_Pictographic}/u.test(text))return text;
   const icon=/^Alege/.test(text)?'🎯':/^Completează/.test(text)?'🧩':/^Transformă/.test(text)?'🔄':/^Detectiv/.test(text)?'🔎':/^Calculează/.test(text)?'🧮':/^Așază/.test(text)?'✏️':/^Rezolvă/.test(text)?'💡':/^Află/.test(text)?'🔎':route[0]==='science'?'🔬':route[0]==='math'?'🧮':route[1]==='punct'?'📄':'✍️';
