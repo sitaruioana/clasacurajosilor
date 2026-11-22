@@ -401,5 +401,13 @@ window.VOCAB_ADDITIONS = [
     "lesson": "17 noiembrie",
     "addedAt": "2026-11-17T10:45:00+02:00",
     "releaseAt": "2026-11-17T10:45:00+02:00"
-  }
+  },
+  {"word":"sprinten","meaning":"rapid","sentence":"Iepurașul ___ a sărit peste o buturugă.","answers":"sprinten","opposite":"lent","bonusSimilar":"iute","bonusRhyme":"pinten","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
+  {"word":"scotocea","meaning":"căuta","sentence":"Motanul ___ prin cutie după jucăria sa.","answers":"scotocea","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
+  {"word":"zburdalnice","meaning":"neastâmpărate","sentence":"Fetițele ___ alergau vesele prin curte.","answers":"zburdalnice","opposite":"liniștite","bonusSimilar":"jucăușe","bonusRhyme":"falnice","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
+  {"word":"îngăimă","meaning":"se fâstâcește","sentence":"Copleșit de emoții, băiatul ___ un răspuns.","answers":"îngăimă","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
+  {"word":"a se răspândi","meaning":"a se împrăștia","sentence":"Semințele se pot ___ cu ajutorul vântului.","answers":"răspândi","opposite":"a se aduna","bonusSimilar":"a se risipi","bonusRhyme":"a se gândi","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
+  {"word":"brambura","meaning":"alandala","sentence":"După joacă, jucăriile erau împrăștiate ___ prin cameră.","answers":"brambura","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
+  {"word":"bocceluță","meaning":"săculeț","sentence":"Fetița și-a pus merindele într-o ___ .","answers":"bocceluță","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
+  {"word":"buclucaș","meaning":"provocator","sentence":"Copiii au încercat să rezolve un exercițiu ___ .","answers":"buclucaș","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"}
 ];
