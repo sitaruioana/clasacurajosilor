@@ -409,5 +409,5 @@ window.VOCAB_ADDITIONS = [
   {"word":"a se răspândi","meaning":"a se împrăștia","sentence":"Semințele se pot ___ cu ajutorul vântului.","answers":"răspândi","opposite":"a se aduna","bonusSimilar":"a se risipi","bonusRhyme":"a se gândi","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
   {"word":"brambura","meaning":"alandala","sentence":"După joacă, jucăriile erau împrăștiate ___ prin cameră.","answers":"brambura","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
   {"word":"bocceluță","meaning":"săculeț","sentence":"Fetița și-a pus merindele într-o ___ .","answers":"bocceluță","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"},
-  {"word":"buclucaș","meaning":"provocator","sentence":"Copiii au încercat să rezolve un exercițiu ___ .","answers":"buclucaș","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"}
+  {"word":"buclucaș","meaning":"problematic","sentence":"Un lucru ___ poate provoca necazuri.","answers":"buclucaș","lesson":"22 noiembrie","addedAt":"2026-11-22T20:45:00+02:00","releaseAt":"2026-11-22T20:45:00+02:00"}
 ];
