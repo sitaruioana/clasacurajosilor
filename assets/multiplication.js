@@ -217,7 +217,7 @@ function multSaveRound(){
 function multSetup(){if(!state.__multRound){const made=multBuild(route[2],route[3],state.__multSeen||[]);state.__multRound=made.round;state.__multSeen=made.seen;state.__multFinished=false;}return state.__multRound;}
 function multSet(i,key,value){state['mult-'+i+'-'+key]=value;const task=document.getElementById('mult-task-'+i);if(task){task.classList.remove('good','bad');task.querySelector('.mult-feedback').textContent='';}const score=document.getElementById('mult-score');if(score)score.replaceChildren();}
 function multRender(level,game){
- if(!MULT_LEVELS[level])return view(`<div class="hero"><h2>✖️ Înmulțirea</h2><p>Alege de unde vrei să începi!</p></div><div class="cards">${Object.entries(MULT_LEVELS).map(([id,[title,description]],i)=>card((i+1)+'. '+title,description,`go('math','multiply','${id}')`)).join('')}</div>`);
+ if(!MULT_LEVELS[level])return view(`<div class="hero"><h2>✖️ Înmulțirea</h2><p>Alege de unde vrei să începi!</p></div><div class="cards">${Object.entries(MULT_LEVELS).map(([id,[title,description]],i)=>card((i+1)+'. '+title,description,`go('math','multiply','${id}')`,id==='zu_u'?'2026-11-25T00:00:00+02:00':undefined)).join('')}</div>`);
  if(!MULT_GAMES[game])return view(`<div class="hero"><h2>✖️ ${esc(MULT_LEVELS[level][0])}</h2><p>Alege un joc!</p></div><div class="cards">${Object.entries(MULT_GAMES).map(([id,[title,description]],i)=>card((i+1)+'. '+title,description,`go('math','multiply','${level}','${id}')`,id==='istetei'?'2026-11-15T00:00:00+02:00':undefined)).join('')}</div>`);
  const n=multAmount(game),target=multTarget(game),round=multSetup(),done=multCompleted();
  const instruction=game==='istetei'?'Calculează mintal, urmând pașii, și scrie răspunsul.':game==='spion'?'În fiecare serie sunt două calcule greșite. Alege „Corect” sau „Greșit”; pentru cele greșite, scrie rezultatul corect.':game==='situatii'?'Citește fiecare problemă și scrie răspunsul.':'Calculează și scrie rezultatul.';
@@ -245,7 +245,7 @@ rewardChapter('math-distributivitate','math',DIST_TITLE,Object.entries(DIST_TYPE
 const distOldMultRender=multRender;
 multRender=function(level,game){
  if(level==='suma')return distRender(game);
- if(!level){const result=distOldMultRender(level,game);const grid=document.querySelector('#app .cards');if(grid){const el=document.createElement('div');el.innerHTML=card('2. '+DIST_TITLE,'Descoperă și exersează',"go('math','multiply','suma')",'2026-11-20T00:00:00+02:00');const btn=el.firstElementChild;grid.insertBefore(btn,grid.children[1]||null);[...grid.children].forEach((node,i)=>{if(node!==btn){const strong=node.querySelector('strong');if(strong)strong.firstChild.textContent=strong.firstChild.textContent.replace(/^\d+\./,(i+1)+'.');}});}return result;}
+ if(!level){const result=distOldMultRender(level,game);const grid=document.querySelector('#app .cards');if(grid){const el=document.createElement('div');el.innerHTML=card('2. '+DIST_TITLE,'Descoperă și exersează',"go('math','multiply','suma')");const btn=el.firstElementChild;grid.insertBefore(btn,grid.children[1]||null);[...grid.children].forEach((node,i)=>{if(node!==btn){const strong=node.querySelector('strong');if(strong)strong.firstChild.textContent=strong.firstChild.textContent.replace(/^\d+\./,(i+1)+'.');}});}return result;}
  return distOldMultRender(level,game);
 };
 const DIST_ITEMS=[[2,4,5,'+'],[4,7,3,'+'],[5,6,2,'+'],[9,8,3,'−'],[7,9,1,'−'],[6,10,5,'−'],[3,8,2,'+'],[8,6,4,'+'],[5,12,2,'−'],[4,15,5,'−']];
