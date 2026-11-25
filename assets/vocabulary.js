@@ -56,7 +56,7 @@ function activityCardTitle(title){
     if(/^\d+\./.test(String(title)))return String(title);
     const index=Object.values(orthoNames).indexOf(String(title));if(index>=0)return (index+1)+'. '+title;
   }
-  if((route[0]==='science'&&route[1]==='lessons'&&(!route[2]||route[2]==='earth'||route[2]==='life'))||route[0]==='math'||(route[0]==='science'&&route[1]==='experiments'))return String(title).trim();
+  if((route[0]==='llr'&&route[1]==='vorbire')||(route[0]==='science'&&route[1]==='lessons'&&(!route[2]||route[2]==='earth'||route[2]==='life'))||route[0]==='math'||(route[0]==='science'&&route[1]==='experiments'))return String(title).trim();
   const text=String(title).replace(/^\d+\.\s*/, '').trim();
   if(/^\p{Extended_Pictographic}/u.test(text))return text;
   const icon=/^Alege/.test(text)?'🎯':/^Completează/.test(text)?'🧩':/^Transformă/.test(text)?'🔄':/^Detectiv/.test(text)?'🔎':/^Calculează/.test(text)?'🧮':/^Așază/.test(text)?'✏️':/^Rezolvă/.test(text)?'💡':/^Află/.test(text)?'🔎':route[0]==='science'?'🔬':route[0]==='math'?'🧮':route[1]==='punct'?'📄':'✍️';
@@ -308,11 +308,11 @@ vocabSetval=function(id,value){vocabGapOriginalSet(id,value);if(route[0]==='llr'
 route=routeFromPath();state=loadProgress();render();
 
 // Install subject extensions before attaching the shared reward system.
-function curajosLoadScript(name){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=SITE_ROOT+'assets/'+name+'.js?v='+(name==='orthograms-extended'?'20261117-23-enunturi-texte':name==='math-intervals'?'20261121-mediu':name==='new-subjects'?'20261116-manual-online':name==='rewards'?'20261117-introducere':name==='science-data'?'20261121-mediu':name==='science-lessons'?'20261121-mediu':name==='multiplication'?'20261116-cutie':name==='math-evaluation'?'20261117-23-necunoscute':name==='orthograms'?'20261116-intruna':name==='ortho-bonus'?'20261116-evaluare':'20261105-calm');s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});}
+function curajosLoadScript(name){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=SITE_ROOT+'assets/'+name+'.js?v='+(name==='orthograms-extended'?'20261117-23-enunturi-texte':name==='math-intervals'?'20261125-vorbire':name==='new-subjects'?'20261116-manual-online':name==='rewards'?'20261117-introducere':name==='science-data'?'20261121-mediu':name==='science-lessons'?'20261121-mediu':name==='multiplication'?'20261116-cutie':name==='math-evaluation'?'20261117-23-necunoscute':name==='orthograms'?'20261116-intruna':name==='ortho-bonus'?'20261116-evaluare':'20261105-calm');s.onload=resolve;s.onerror=reject;document.body.appendChild(s);});}
 Promise.all([
  curajosLoadScript('science-data').then(()=>curajosLoadScript('science-lessons')),
  curajosLoadScript('math-order'),
  curajosLoadScript('math-unknown'),
  curajosLoadScript('orthograms').then(()=>curajosLoadScript('orthograms-extended'))
-]).then(()=>curajosLoadScript('rewards')).then(()=>curajosLoadScript('new-subjects')).then(()=>curajosLoadScript('ortho-bonus')).then(()=>curajosLoadScript('math-evaluation')).then(()=>curajosLoadScript('multiplication')).then(()=>curajosLoadScript('math-intervals')).catch(()=>{const el=document.createElement('p');el.className='result';el.textContent='Pagina nu s-a încărcat complet. Reîncarcă și continuă!';document.getElementById('app').prepend(el);});
+]).then(()=>curajosLoadScript('rewards')).then(()=>curajosLoadScript('new-subjects')).then(()=>curajosLoadScript('ortho-bonus')).then(()=>curajosLoadScript('math-evaluation')).then(()=>curajosLoadScript('multiplication')).then(()=>curajosLoadScript('math-intervals')).then(()=>curajosLoadScript('parti-vorbire')).catch(()=>{const el=document.createElement('p');el.className='result';el.textContent='Pagina nu s-a încărcat complet. Reîncarcă și continuă!';document.getElementById('app').prepend(el);});
 
