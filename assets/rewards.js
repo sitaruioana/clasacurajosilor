@@ -65,7 +65,23 @@ function rewardFieldValue(el){return el.tagName==='BUTTON'?(el.classList.contain
 function rewardGenericIds(){return [...document.querySelectorAll('[data-answer]')].flatMap((el,i)=>el.dataset.answer.split('|').map(norm).includes(norm(rewardFieldValue(el)))?[el.dataset.id||String(i)]:[]);}
 certificateUnlock=()=>''; // Chapter completion replaces the old single-activity diploma.
 const rewardOldVerify=verify;
-verify=function(){rewardOldVerify();const fields=[...document.querySelectorAll('[data-answer]')];rewardAfter(rewardGenericIds(),fields.length,'#score');};
+verify=function(){
+ rewardOldVerify();
+ const fields=[...document.querySelectorAll('[data-answer]')];
+ if(route[0]==='llr'&&route[1]==='punct'&&route[2]==='hard'){
+  const extras=fields.filter(el=>el.classList.contains('punct')&&el.dataset.answer==='cut');
+  const found=extras.filter(el=>el.classList.contains('cut'));
+  const wrong=fields.filter(el=>el.classList.contains('punct')&&el.dataset.answer==='keep'&&el.classList.contains('cut'));
+  fields.filter(el=>el.classList.contains('punct')&&el.dataset.answer==='keep'&&!el.classList.contains('cut')).forEach(el=>el.classList.remove('good','bad'));
+  const earned=rewardGrant('llr',found.map(el=>el.dataset.id));
+  const complete=extras.length>0&&found.length===extras.length&&wrong.length===0;
+  if(complete)rewardMark(route.join('/'));
+  const score=document.getElementById('score');
+  if(score)score.innerHTML=`<div class="result">Semne greșite tăiate corect: ${found.length}.${wrong.length?' Semne corecte tăiate: '+wrong.length+'.':''} ${!found.length&&!wrong.length?'Taie semnele care sunt în plus, apoi verifică.':complete?'Bravo! Ai găsit toate semnele în plus! 🌟':''}</div>`+rewardMessage(earned,'llr')+(complete?'<p class="reward-stage">✓ Etapă bifată în progresul tău!</p>':'');
+  return;
+ }
+ rewardAfter(rewardGenericIds(),fields.length,'#score');
+};
 const rewardOldBatchVerify=vocabBatchVerify;
 vocabBatchVerify=function(){rewardOldBatchVerify();const total=document.querySelectorAll('[data-answer]').length;if(total&&rewardGenericIds().length===total){rewardMark(route.join('/'));const el=document.querySelector('#score');if(el)el.innerHTML+='<p class="reward-stage">✓ Etapă bifată în progresul tău!</p>';}};
 const rewardOldGapVerify=vocabGapVerify;
