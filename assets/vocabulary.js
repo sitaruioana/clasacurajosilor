@@ -170,7 +170,7 @@ function vocabLetterHint(answer) {
 }
 function vocabSimilarHelp(i) {
   const hint=$('#vsh'+i);hint.hidden=!hint.hidden;
-  hint.textContent='Începe așa: '+vocabLetterHint(VOCAB[i][1]);
+  hint.textContent='Începe așa: '+vocabLetterHint((VOCAB[i][1]||'').split(',')[0].trim());
 }
 function vocabFlashOrder(){
   return VOCAB.map((_,i)=>i).sort((a,b)=>{
@@ -289,7 +289,7 @@ renderVocab = function(level) {
   if(level==='opposite')return vocabRenderOpposite();
   if(level!=='match'&&level!=='similar')return originalRenderVocab(level);
   const ids=vocabEnsureBatch(),m=vocabModel(),options=vocabShuffle(ids).map(i=>VOCAB[i][1]);
-  const body=(level==='similar'?`<div class="rule"><b>Lista de cuvinte:</b><div class="vocab-bank">${options.map(o=>`<span>${esc(o)}</span>`).join('')}</div></div>`:'')+ids.map((i,j)=>`<div class="task"><label><b>${j+1}. ${esc(VOCAB[i][0])}</b> → ${level==='match'?`<select class="entry" style="width:260px;max-width:100%" aria-label="Sensul cuvântului ${esc(VOCAB[i][0])}" data-answer="${esc(VOCAB[i][1])}" data-id="${i}" onchange="vocabSetval('${i}',this.value)"><option value="">Alege perechea</option>${options.map(o=>`<option value="${esc(o)}" ${val(i)===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`:vocabEntry(i,VOCAB[i][1])}</label>${level==='similar'?` <button class="btn alt" onclick="vocabSimilarHelp(${i})">💡 Indiciu</button><div class="hint" id="vsh${i}" hidden></div>`:''}</div>`).join('');
+  const body=(level==='similar'?`<div class="rule"><b>Lista de cuvinte:</b><div class="vocab-bank">${options.map(o=>`<span>${esc(o)}</span>`).join('')}</div></div>`:'')+ids.map((i,j)=>`<div class="task"><label><b>${j+1}. ${esc(VOCAB[i][0])}</b> → ${level==='match'?`<select class="entry" style="width:260px;max-width:100%" aria-label="Sensul cuvântului ${esc(VOCAB[i][0])}" data-answer="${esc(VOCAB[i][1])}" data-id="${i}" onchange="vocabSetval('${i}',this.value)"><option value="">Alege perechea</option>${options.map(o=>`<option value="${esc(o)}" ${val(i)===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`:vocabEntry(i,[VOCAB[i][1],...((window.VOCAB_ADDITIONS||[]).find(item=>item.word===VOCAB[i][0])?.meaningAnswers||[])].join('|'))}</label>${level==='similar'?` <button class="btn alt" onclick="vocabSimilarHelp(${i})">💡 Indiciu</button><div class="hint" id="vsh${i}" hidden></div>`:''}</div>`).join('');
   view(`<div class="hero"><h2>${level==='match'?'🧩 Găsește perechea':'✏️ Scrie cuvinte cu sens asemănător'}</h2><p>${level==='match'?'Găsește perechile! 🌟':'Scrie perechile! 💡 Indiciul te ajută.'}</p><p class="vocab-progress">Runda ${m.round} · ${ids.length} cuvinte</p></div><div class="panel">${body}<div class="row"><button class="btn" onclick="vocabBatchVerify()">✓ Verifică</button><button class="btn alt" onclick="vocabRepeatRound()">↺ Repetă runda</button></div><div id="score" aria-live="polite"></div><button id="vocab-next-set" class="btn pink" onclick="vocabNextSet()" ${m.verified?'':'disabled'}>Încă o rundă! →</button></div>`);
 };
 /* Câte cinci propoziții, cu indicii și cu oprire oricând. */
