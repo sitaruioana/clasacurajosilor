@@ -43,19 +43,41 @@ const SPEECH_FACTORY=[
 // Seria a doua are o însușire clară, nu un adverb.
 SPEECH_FACTORY[7]=['cristalină','insusiri'];
 const SPEECH_COLOR=[["copilul","nume"],["vesel","insusiri"],["citește","actiuni"],["unu","numere"],["codrul","nume"],["botinele","nume"],["mergea","actiuni"],["ghiduș","insusiri"],["luminișul","nume"],["ploaia","nume"],["șase","numere"],["cuminte","insusiri"],["șapte","numere"],["blândă","insusiri"],["va desena","actiuni"],["opt","numere"],["darnică","insusiri"],["zboară","actiuni"],["zburdalnice","insusiri"],["se joacă","actiuni"],["căldarea","nume"],["desenează","actiuni"],["douăsprezece","numere"],["savantul","nume"]];
+// Seriile noi apar primele; fiecare cuvânt are o singură categorie.
+SPEECH_FACTORY.unshift(
+ ['contaminată','insusiri'],['copacul','nume'],['înflorește','actiuni'],['aleargă','actiuni'],['savantul','nume'],['șoptește','actiuni'],
+ ['clasifică','actiuni'],['senină','insusiri'],['bocceluța','nume'],['alterată','insusiri'],['pădurea','nume'],['șapte','numere'],
+ ['încovoiat','insusiri'],['flutură','actiuni'],['șoșonii','nume'],['duna','nume'],['codrul','nume'],['mărinimoasă','insusiri'],
+ ['bucuroasă','insusiri'],['cerdacul','nume'],['scotocea','actiuni'],['treisprezece','numere'],['durdulie','insusiri'],['caută','actiuni'],
+ ['luminișul','nume'],['zburdalnice','insusiri'],['buburuza','nume'],['murmură','actiuni'],['granița','nume'],['țopăie','actiuni'],
+ ['partizanul','nume'],['frivolă','insusiri'],['citește','actiuni'],['vioaie','insusiri'],['buclucaș','insusiri'],['cochilia','nume'],
+ ['laleaua','nume'],['ploaia','nume'],['construiește','actiuni'],['cristalină','insusiri'],['nouă','numere'],['îngăimă','actiuni'],
+ ['cincisprezece','numere'],['bocceluțele','nume'],['sprinten','insusiri'],['pictează','actiuni'],['neastâmpărat','insusiri'],['fulgerul','nume']
+);
+SPEECH_COLOR.unshift(
+ ['duna','nume'],['privește','actiuni'],['strălucește','actiuni'],['buclucașă','insusiri'],['codrul','nume'],['cântă','actiuni'],
+ ['senină','insusiri'],['șoșonii','nume'],['vesele','insusiri'],['adună','actiuni'],['paisprezece','numere'],['savantul','nume'],
+ ['contaminată','insusiri'],['bocceluța','nume'],['desenează','actiuni'],['vulpea','nume'],['darnică','insusiri'],['tunetul','nume'],
+ ['cercetează','actiuni'],['grăbită','insusiri'],['cristalină','insusiri'],['copilul','nume'],['scotocea','actiuni'],['cinci','numere'],
+ ['încovoiat','insusiri'],['cartea','nume'],['merg','actiuni'],['îngăimă','actiuni'],['răsfirat','insusiri'],['granița','nume'],
+ ['luminișul','nume'],['sprintenă','insusiri'],['legumele','nume'],['clasifică','actiuni'],['ploaia','nume'],['dansa','actiuni'],
+ ['prietenos','insusiri'],['căldarea','nume'],['alterată','insusiri'],['murmură','actiuni'],['cincisprezece','numere'],['fluturii','nume'],
+ ['fetița','nume'],['zburdalnice','insusiri'],['citește','actiuni'],['doisprezece','numere'],['frivolă','insusiri'],['desenează','actiuni']
+);
 const SPEECH_CONTEXT=[
- ['Iepurele {sprinten} a sărit gardul.','insusiri'],['Bunica {murmură} un cântec.','actiuni'],['{Bocceluța} conținea merinde.','nume'],['Pe ramură stăteau {trei} vrăbii.','numere'],['Copilul a găsit {cinci} flori.','numere'],['{Botinele} sunt lângă ușă.','nume'],
- ['Am privit o apă {cristalină}.','insusiri'],['Motanul {scotocea} prin cutie.','actiuni'],['Vântul a format {duna} din nisip.','nume'],['În clasă au venit {patru} copii.','numere'],['{Copiii} îngrijesc plantele.','nume'],['Fetița {cuminte} ascultă povestea.','insusiri'],
+ ['Iepurele {sprinten} a sărit gardul.','insusiri'],['Bunica {murmură} un cântec.','actiuni'],['{Bocceluța} conținea merinde.','nume'],['Pe ramură stăteau {trei} vrăbii.','numere'],['Copilul a găsit o floare {parfumată}.','insusiri'],['{Botinele} sunt lângă ușă.','nume'],
+ ['Am privit o apă {cristalină}.','insusiri'],['Motanul {scotocea} prin cutie.','actiuni'],['Vântul a format {duna} din nisip.','nume'],['În clasă au sosit {elevii}.','nume'],['{Copiii} îngrijesc plantele.','nume'],['Fetița {cuminte} ascultă povestea.','insusiri'],
  ['O fetiță {mărinimoasă} a ajutat colega.','insusiri'],['Copiii {clasifică} frunzele.','actiuni'],['{Cerdacul} bunicului este însorit.','nume'],['Am cules {două} castane.','numere'],['Fetele {citesc} o poveste.','actiuni'],['Pasărea {zboară} peste pădure.','actiuni'],
- ['Copacul {încovoiat} creștea pe deal.','insusiri'],['Copilul {căuta} cartea.','actiuni'],['{Savantul} cercetează natura.','nume'],['Am desenat {șapte} stele.','numere'],['Un copil {harnic} udă florile.','insusiri'],['Bunicii au pregătit {trei} prăjituri.','numere']
+ ['Copacul {încovoiat} creștea pe deal.','insusiri'],['Copilul {căuta} cartea.','actiuni'],['{Savantul} cercetează natura.','nume'],['Am desenat {șapte} stele.','numere'],['Un copil {harnic} udă florile.','insusiri'],['Bunicii {pregătesc} prăjituri.','actiuni']
 ];
 const SPEECH_CONTEXT_LABELS={nume:'ființă, lucru, fenomen',insusiri:'însușire',actiuni:'acțiune',numere:'număr'};
 const SPEECH_CATEGORY_MAP=Object.fromEntries(SPEECH_CATEGORIES.map(([k,label,color,emoji])=>[k,{label,color,emoji}]));
 const speechFactoryStyle=document.createElement('style');speechFactoryStyle.textContent=`.factory-words,.factory-categories{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.factory-word,.factory-box,.factory-color{font:inherit;color:#24334a;border:2px solid #b8cce2;background:#fff;border-radius:12px;min-height:48px;padding:10px 14px;cursor:pointer}.factory-word[aria-pressed=true]{outline:3px solid #355eb7;outline-offset:2px}.factory-box{flex:1 1 220px;text-align:left;min-height:90px}.factory-box strong,.factory-box small{display:block}.factory-box small{margin-top:8px}.factory-color[aria-pressed=true]{outline:3px solid #244e9b;outline-offset:2px}.factory-right{box-shadow:inset 0 0 0 3px #398755}.factory-wrong{box-shadow:inset 0 0 0 3px #c86660}.factory-status{font-size:.88em;display:block}.factory-context{line-height:1.65}.factory-context mark{background:#fff1bd;border-radius:5px;padding:0 4px}.factory-choice{display:flex;flex-wrap:wrap;gap:8px}.factory-choice button{font:inherit;color:#24334a;background:#fff;border:1px solid #b8cce2;border-radius:10px;min-height:44px;padding:8px 11px}.factory-choice button[aria-pressed=true]{background:#e3edff;border-color:#5578ca}.factory-choice button.factory-right{background:#d9f2e1}.factory-choice button.factory-wrong{background:#fff0ef}.factory-word:focus-visible,.factory-box:focus-visible,.factory-color:focus-visible{outline:3px solid #ffb540;outline-offset:2px}`;document.head.appendChild(speechFactoryStyle);
 function sfStore(){
  const m=state.__speechFactory||(state.__speechFactory={answers:{},checks:{},selected:null,color:null});
+ if(!m.extraSeriesV1&&['grupeaza','coloreaza'].includes(route[3])){m.answers={};m.checks={};m.selected=null;m.color=null;m.extraSeriesV1=true;}
  if(!m.withoutPronounsV1){
-  const changed={grupeaza:[4,9,16,21,23],coloreaza:[4,12,16,21,23],alegere:[4,10,16,22,23]}[route[3]]||[];
+  const changed={grupeaza:[4,9,16,21,23],coloreaza:[4,12,16,21,23],alegere:[4,9,10,16,22,23]}[route[3]]||[];
   for(const i of changed){delete m.answers[i];delete m.checks[i];}
   for(const [i,value] of Object.entries(m.answers))if(!SPEECH_CATEGORY_MAP[value]){delete m.answers[i];delete m.checks[i];}
   if(m.color&&!SPEECH_CATEGORY_MAP[m.color])m.color=null;
@@ -69,9 +91,9 @@ function sfDrop(event,category){event.preventDefault();const v=event.dataTransfe
 function sfColor(category){sfStore().color=category;render();}
 function sfColorWord(index){const m=sfStore();if(!m.color)return;m.answers[index]=m.color;delete m.checks[index];render();}
 function sfContextChoose(index,category){const m=sfStore();m.answers[index]=category;delete m.checks[index];render();}
-function sfVerify(){const m=sfStore(),mode=route[3],rows=mode==='alegere'?SPEECH_CONTEXT:mode==='coloreaza'?SPEECH_COLOR:SPEECH_FACTORY,size=mode==='coloreaza'?12:6,start=(Number(state.speechSeries)||0)*size,correct=[];let attempted=0;for(let i=start;i<start+size;i++){let value=m.answers[i];if(!value){delete m.checks[i];continue;}attempted++;let ok=value===rows[i][1];m.checks[i]=ok?'right':'wrong';if(ok)correct.push(String(i));}const earned=rewardGrant('llr',correct);render();const result=document.getElementById('score');result.innerHTML=`<div class="result">${attempted?'Răspunsuri completate: '+attempted+'. Corecte: '+correct.length+'.':'Completează un răspuns și verifică.'}</div>`+rewardMessage(earned,'llr');}
+function sfVerify(){const m=sfStore(),mode=route[3],rows=mode==='alegere'?SPEECH_CONTEXT:mode==='coloreaza'?SPEECH_COLOR:SPEECH_FACTORY,size=6,start=(Number(state.speechSeries)||0)*size,correct=[];let attempted=0;for(let i=start;i<start+size;i++){let value=m.answers[i];if(!value){delete m.checks[i];continue;}attempted++;let ok=value===rows[i][1];m.checks[i]=ok?'right':'wrong';if(ok)correct.push(String(i));}const earned=rewardGrant('llr',correct);render();const result=document.getElementById('score');result.innerHTML=`<div class="result">${attempted?'Răspunsuri completate: '+attempted+'. Corecte: '+correct.length+'.':'Completează un răspuns și verifică.'}</div>`+rewardMessage(earned,'llr');}
 function sfNav(series,total=4){return `<div class="row"><button class="btn" onclick="sfVerify()">✓ Verifică</button>${series>0?`<button class="btn alt" onclick="speechSeries(${series-1})">Seria anterioară</button>`:''}${series<total-1?`<button class="btn" onclick="speechSeries(${series+1})">Seria următoare</button>`:`<button class="btn alt" onclick="speechRepeat()">Repetă</button>`}</div><div id="score" aria-live="polite"></div>`;}
-function sfRender(mode){const m=sfStore(),size=mode==='coloreaza'?12:6,total=24/size,series=Math.max(0,Math.min(total-1,Number(state.speechSeries)||0)),start=series*size,ids=Array.from({length:size},(_,j)=>start+j),title=SPEECH_ACT.cuvant[mode];let body='';if(mode==='grupeaza'){
+function sfRender(mode){const m=sfStore(),size=6,total=mode==='alegere'?SPEECH_CONTEXT.length/size:mode==='coloreaza'?SPEECH_COLOR.length/size:SPEECH_FACTORY.length/size,series=Math.max(0,Math.min(total-1,Number(state.speechSeries)||0)),start=series*size,ids=Array.from({length:size},(_,j)=>start+j),title=SPEECH_ACT.cuvant[mode];let body='';if(mode==='grupeaza'){
  const words=speechOptions('factory-boxes-'+series,ids).map((i,position)=>{let [word]=SPEECH_FACTORY[i],placed=m.answers[i],checked=m.checks[i];return `<button type="button" class="factory-word ${checked?'factory-'+checked:''}" draggable="true" aria-pressed="${m.selected===i}" ondragstart="event.dataTransfer.setData('text/plain','${i}')" onclick="sfPickWord(${i})">${esc(word)}${placed?`<span class="factory-status">${SPEECH_CATEGORY_MAP[placed].emoji}${checked==='right'?' ✅':checked==='wrong'?' ❌':''}</span>`:''}</button>`;}).join('');
  const boxes=SPEECH_CATEGORIES.map(([id,label,color,emoji])=>`<button type="button" class="factory-box" style="background:${color}" ondragover="event.preventDefault()" ondrop="sfDrop(event,'${id}')" onclick="sfPlace('${id}')"><strong>📦 ${emoji} ${esc(label)}</strong><small>${ids.filter(i=>m.answers[i]===id).map(i=>esc(SPEECH_FACTORY[i][0])).join(' · ')||'Așază aici cuvintele'}</small></button>`).join('');body=`<p>Trage cuvântul în cutia potrivită sau apasă pe cuvânt, apoi pe cutie.</p><div class="factory-words">${words}</div><div class="factory-categories">${boxes}</div>`;
  }else if(mode==='coloreaza'){
