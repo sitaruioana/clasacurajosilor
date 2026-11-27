@@ -76,7 +76,18 @@ function unknownOptions(answer,i){
   const m=answer-d;
   if(choices.length<3&&m>=1000&&m!==answer&&!choices.includes(m))choices.push(m);
  }
- const correctPosition=i%4;
+ // Ordinea se păstrează în timpul lucrului și se amestecă la o nouă încercare.
+ if(!Array.isArray(state.__unknownPositions)||state.__unknownPositions.length!==10){
+  let positions,tries=0;
+  do{
+   positions=[0,0,0,1,1,1,2,2,3,3];
+   for(let j=positions.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[positions[j],positions[k]]=[positions[k],positions[j]];}
+   tries++;
+  }while(tries<25&&positions.some((p,j)=>j>=3&&p===(positions[j-1]+1)%4&&positions[j-1]===(positions[j-2]+1)%4&&positions[j-2]===(positions[j-3]+1)%4));
+  if(positions.some((p,j)=>j>=3&&p===(positions[j-1]+1)%4&&positions[j-1]===(positions[j-2]+1)%4&&positions[j-2]===(positions[j-3]+1)%4))positions=[1,3,0,2,0,2,3,1,3,0];
+  state.__unknownPositions=positions;
+ }
+ const correctPosition=state.__unknownPositions[i];
  choices.splice(correctPosition,0,answer);
  return choices;
 }
