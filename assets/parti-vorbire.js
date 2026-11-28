@@ -200,11 +200,11 @@ const NOUN_REVIEW=[
 ];
 const ADJ_REVIEW=[
  ['Care cuvânt este adjectiv?','sprinten',['iepure','aleargă']],['Care cuvânt este adjectiv?','mărinimoasă',['fetiță','ajută']],['Ce arată adjectivul „cristalină”?','o însușire',['o acțiune','un număr']],['În „iepure sprinten”, ce cuvânt arată însușirea?','sprinten',['iepure','ambele']],
- ['În „apă cristalină”, adjectivul este:','cristalină',['apă','este']],['În „fetiță mărinimoasă”, adjectivul este:','mărinimoasă',['fetiță','este']],['Care este adjectivul potrivit: „fata ___”?','harnică',['harnic','harnici']],['Care este adjectivul potrivit: „băieții ___”?','veseli',['veselă','vesel']],
+ ['În „cristalina apă”, adjectivul este:','cristalina',['apă','cristal']],['În „fetița mărinimoasă”, ce substantiv are însușirea „mărinimoasă”?','fetița',['mărinimoasă','fetițele']],['Care este adjectivul potrivit: „fata ___”?','harnică',['harnic','harnici']],['Care este adjectivul potrivit: „băieții ___”?','veseli',['veselă','vesel']],
  ['În „copil vesel”, adjectivul este așezat:','după substantiv',['înaintea substantivului','nu există adjectiv']],['În „veselul copil”, adjectivul este așezat:','înaintea substantivului',['după substantiv','nu există adjectiv']],['Care grup are adjectivul înainte?','sprintenul iepure',['iepurele sprinten','iepurele sare']],['Care grup are adjectivul după substantiv?','floarea parfumată',['parfumata floare','floarea crește']],
  ['Cu ce substantiv se potrivește „cristalină”?','apă',['băiat','copaci']],['Cu ce substantiv se potrivește „sprinteni”?','iepuri',['iepure','fetiță']],['Care este pluralul lui „vesel”, pentru „copii”?','veseli',['veselă','vesel']],['Care este forma potrivită: „flori ___”?','frumoase',['frumos','frumoasă']],
- ['Care cuvânt exprimă o însușire?','buclucaș',['copil','citește']],['Care cuvânt exprimă o însușire?','alterată',['apă','curge']],['În „copac înalt”, adjectivul este:','înalt',['copac','copac înalt']],['În „dună aurie”, adjectivul este:','aurie',['dună','dună aurie']],
- ['Ce adjectiv provine din „curaj”?','curajos',['curaj','aleargă']],['Ce adjectiv provine din „bucurie”?','bucuros',['bucurie','citește']],['În „fete zburdalnice”, adjectivul este:','zburdalnice',['fete','fete zburdalnice']],['Care grup este corect?','apele cristaline',['apele cristalin','apa cristalini']]
+ ['Care cuvânt exprimă o însușire?','buclucaș',['copil','citește']],['Care cuvânt exprimă o însușire?','alterată',['apă','curge']],['În „copac înalt”, adjectivul este:','înalt',['copac','copac înalt']],['În „auria dună”, adjectivul este:','auria',['dună','aurul']],
+ ['Ce adjectiv provine din „curaj”?','curajos',['curaj','aleargă']],['Ce adjectiv provine din „bucurie”?','bucuros',['bucurie','citește']],['În „zburdalnicele fete”, adjectivul este:','zburdalnicele',['fete','zburdalnicele fete']],['Care grup este corect?','apele cristaline',['apele cristalin','apa cristalini']]
 ];
 
 function grammarQuizRows(lesson,mode){
